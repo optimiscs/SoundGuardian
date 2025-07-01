@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>热力追踪 - 慧音执守-物联网语音安全领航者</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+primary: '#3b82f6',
+secondary: '#1e40af'
+},
+borderRadius: {
+'none': '0px',
+'sm': '4px',
+DEFAULT: '8px',
+'md': '12px',
+'lg': '16px',
+'xl': '20px',
+'2xl': '24px',
+'3xl': '32px',
+'full': '9999px',
+'button': '8px'
+}
+}
+}
+}
+</script>
+<style>
+:where([class^="ri-"])::before {
+content: "\f3c2";
+}
+.heat-point {
+animation: pulse 2s infinite;
+}
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.5; }
+}
+.heat-point-high {
+box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+.heat-point-medium {
+box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+}
+.heat-point-low {
+box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+.map-controls {
+backdrop-filter: blur(10px);
+background: rgba(255, 255, 255, 0.9);
+}
+.custom-scrollbar::-webkit-scrollbar {
+width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+background: #f1f5f9;
+border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+background: #cbd5e1;
+border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+background: #94a3b8;
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- 顶部导航栏 -->
+<header class="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-6">
+<div class="flex items-center space-x-4">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-shield-check-line text-primary text-xl"></i>
+</div>
+<h1 class="text-xl font-semibold text-gray-900">慧音执守-物联网语音安全领航者</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-notification-3-line text-gray-600"></i>
+</div>
+<span class="text-sm text-gray-700">管理员</span>
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+<span class="text-white text-sm font-medium">张</span>
+</div>
+</div>
+<button class="text-gray-600 hover:text-gray-900 whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-logout-box-line"></i>
+</div>
+</button>
+</div>
+</header>
+<div class="flex h-[calc(100vh-4rem)]">
+<!-- 左侧菜单栏 -->
+<aside class="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
+<nav class="p-4 space-y-2">
+<a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-dashboard-line"></i>
+</div>
+<span class="text-sm font-medium">概览仪表板</span>
+</a>
+<a href="trace.html" class="flex items-center space-x-3 px-3 py-2 text-primary bg-blue-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-map-2-line"></i>
+</div>
+<span class="text-sm font-medium">热力追踪</span>
+</a>
+<a href="predict.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-brain-line"></i>
+</div>
+<span class="text-sm font-medium">感知与预测</span>
+</a>
+<a href="task.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-task-line"></i>
+</div>
+<span class="text-sm font-medium">任务管理</span>
+</a>
+<a href="management.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-bar-chart-line"></i>
+</div>
+<span class="text-sm font-medium">数据中心</span>
+</a>
+<a href="Permission.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-admin-line"></i>
+</div>
+<span class="text-sm font-medium">权限管理</span>
+</a>
+</nav>
+</aside>
+<!-- 主内容区域 -->
+<main class="flex-1 flex overflow-hidden">
+<!-- 地图区域 -->
+<div class="flex-1 flex flex-col bg-white">
+<!-- 地图控制工具栏 -->
+<div class="p-4 border-b border-gray-200 bg-white">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<h2 class="text-lg font-semibold text-gray-900">实时攻击热力追踪</h2>
+<div class="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+<button id="heatModeBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-md whitespace-nowrap !rounded-button">热力模式</button>
+<button id="pointModeBtn" class="px-3 py-1 text-sm text-gray-700 rounded-md whitespace-nowrap !rounded-button">标点模式</button>
+</div>
+</div>
+<div class="flex items-center space-x-3">
+<!-- 时间范围选择 -->
+<div class="relative">
+<button id="timeRangeBtn" class="flex items-center space-x-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+<span>最近 24 小时</span>
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-arrow-down-s-line text-gray-500"></i>
+</div>
+</button>
+<div id="timeRangeDropdown" class="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 hidden">
+<div class="p-2">
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">最近 1 小时</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">最近 6 小时</button>
+<button class="w-full text-left px-3 py-2 text-sm bg-blue-50 text-primary rounded-md whitespace-nowrap !rounded-button">最近 24 小时</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">最近 7 天</button>
+<hr class="my-2 border-gray-200">
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">自定义时间</button>
+</div>
+</div>
+</div>
+<!-- 区域筛选 -->
+<div class="relative">
+<button id="regionFilterBtn" class="flex items-center space-x-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+<span>全部区域</span>
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-arrow-down-s-line text-gray-500"></i>
+</div>
+</button>
+<div id="regionFilterDropdown" class="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 hidden">
+<div class="p-2">
+<button class="w-full text-left px-3 py-2 text-sm bg-blue-50 text-primary rounded-md whitespace-nowrap !rounded-button">全部区域</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">朝阳区</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">海淀区</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">西城区</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">东城区</button>
+</div>
+</div>
+</div>
+<!-- 全屏按钮 -->
+<button id="fullscreenBtn" class="p-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-fullscreen-line"></i>
+</div>
+</button>
+</div>
+</div>
+</div>
+<!-- 地图容器 -->
+<div class="flex-1 relative">
+<div class="absolute inset-0 bg-gray-100 overflow-hidden" style="background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png'); background-size: cover; background-position: center;">
+<!-- 热力点 -->
+<div class="absolute top-[25%] left-[30%] w-8 h-8 bg-red-500 rounded-full heat-point heat-point-high opacity-90"></div>
+<div class="absolute top-[35%] left-[45%] w-6 h-6 bg-red-600 rounded-full heat-point heat-point-high opacity-95"></div>
+<div class="absolute top-[50%] left-[55%] w-10 h-10 bg-red-600 rounded-full heat-point heat-point-high opacity-85"></div>
+<div class="absolute top-[40%] right-[25%] w-7 h-7 bg-orange-500 rounded-full heat-point heat-point-medium opacity-80"></div>
+<div class="absolute top-[60%] left-[25%] w-5 h-5 bg-orange-400 rounded-full heat-point heat-point-medium opacity-75"></div>
+<div class="absolute bottom-[30%] right-[35%] w-4 h-4 bg-yellow-500 rounded-full heat-point heat-point-low opacity-70"></div>
+<div class="absolute top-[70%] left-[40%] w-6 h-6 bg-red-500 rounded-full heat-point heat-point-high opacity-88"></div>
+<div class="absolute top-[20%] right-[40%] w-5 h-5 bg-orange-500 rounded-full heat-point heat-point-medium opacity-82"></div>
+<!-- 地图控制按钮 -->
+<div class="absolute top-4 left-4 flex flex-col space-y-2">
+<button class="w-10 h-10 map-controls rounded-lg flex items-center justify-center hover:bg-white transition-colors whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line text-gray-700"></i>
+</div>
+</button>
+<button class="w-10 h-10 map-controls rounded-lg flex items-center justify-center hover:bg-white transition-colors whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-subtract-line text-gray-700"></i>
+</div>
+</button>
+<button class="w-10 h-10 map-controls rounded-lg flex items-center justify-center hover:bg-white transition-colors whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-focus-3-line text-gray-700"></i>
+</div>
+</button>
+</div>
+<!-- 图例 -->
+<div class="absolute bottom-4 left-4 map-controls rounded-lg p-4">
+<div class="text-sm font-medium text-gray-800 mb-3">攻击密度图例</div>
+<div class="space-y-2">
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-red-600 rounded-full heat-point-high"></div>
+<span class="text-sm text-gray-700">高危（>50 次/小时）</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-orange-500 rounded-full heat-point-medium"></div>
+<span class="text-sm text-gray-700">中危（20-50 次/小时）</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-yellow-500 rounded-full heat-point-low"></div>
+<span class="text-sm text-gray-700">低危（<20 次/小时）</span>
+</div>
+</div>
+</div>
+<!-- 实时更新指示器 -->
+<div class="absolute top-4 right-4 map-controls rounded-lg px-3 py-2">
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+<span class="text-sm text-gray-700">实时更新</span>
+<span class="text-xs text-gray-500">16:42:35</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 右侧面板 -->
+<div class="w-96 bg-white border-l border-gray-200 flex flex-col">
+<!-- 统计信息面板 -->
+<div class="p-4 border-b border-gray-200">
+<h3 class="text-lg font-semibold text-gray-900 mb-4">实时统计</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-red-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-red-600">247</div>
+<div class="text-xs text-red-700 mt-1">总攻击次数</div>
+</div>
+<div class="bg-orange-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-orange-600">89</div>
+<div class="text-xs text-orange-700 mt-1">活跃攻击源</div>
+</div>
+<div class="bg-blue-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-blue-600">1,847</div>
+<div class="text-xs text-blue-700 mt-1">受影响设备</div>
+</div>
+<div class="bg-green-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-green-600">12</div>
+<div class="text-xs text-green-700 mt-1">高风险区域</div>
+</div>
+</div>
+</div>
+<!-- 攻击类型筛选 -->
+<div class="p-4 border-b border-gray-200">
+<h4 class="text-sm font-medium text-gray-900 mb-3">攻击类型筛选</h4>
+<div class="space-y-2">
+<label class="flex items-center space-x-2 cursor-pointer">
+<input type="checkbox" checked class="hidden">
+<div class="w-4 h-4 bg-primary border-2 border-primary rounded-sm flex items-center justify-center">
+<i class="ri-check-line text-white text-xs"></i>
+</div>
+<span class="text-sm text-gray-700">探针攻击</span>
+<span class="text-xs text-gray-500 ml-auto">156</span>
+</label>
+<label class="flex items-center space-x-2 cursor-pointer">
+<input type="checkbox" checked class="hidden">
+<div class="w-4 h-4 bg-primary border-2 border-primary rounded-sm flex items-center justify-center">
+<i class="ri-check-line text-white text-xs"></i>
+</div>
+<span class="text-sm text-gray-700">语音劫持</span>
+<span class="text-xs text-gray-500 ml-auto">89</span>
+</label>
+<label class="flex items-center space-x-2 cursor-pointer">
+<input type="checkbox" class="hidden">
+<div class="w-4 h-4 bg-white border-2 border-gray-300 rounded-sm"></div>
+<span class="text-sm text-gray-700">数据窃取</span>
+<span class="text-xs text-gray-500 ml-auto">67</span>
+</label>
+<label class="flex items-center space-x-2 cursor-pointer">
+<input type="checkbox" class="hidden">
+<div class="w-4 h-4 bg-white border-2 border-gray-300 rounded-sm"></div>
+<span class="text-sm text-gray-700">其他攻击</span>
+<span class="text-xs text-gray-500 ml-auto">34</span>
+</label>
+</div>
+</div>
+<!-- 攻击详情列表 -->
+<div class="flex-1 flex flex-col">
+<div class="p-4 border-b border-gray-200">
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-medium text-gray-900">最新攻击事件</h4>
+<button class="text-xs text-primary hover:text-blue-700 whitespace-nowrap !rounded-button">刷新</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="p-4 space-y-3">
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">探针攻击</div>
+<div class="text-xs text-gray-600 mt-1">朝阳区建国门外大街</div>
+<div class="text-xs text-gray-500 mt-1">设备：iPhone 14 Pro</div>
+<div class="text-xs text-red-700 mt-1">16:42 | 高危</div>
+</div>
+</div>
+</div>
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">探针攻击</div>
+<div class="text-xs text-gray-600 mt-1">海淀区中关村大街</div>
+<div class="text-xs text-gray-500 mt-1">设备：华为 Mate 50</div>
+<div class="text-xs text-red-700 mt-1">16:41 | 高危</div>
+</div>
+</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-volume-down-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">语音劫持</div>
+<div class="text-xs text-gray-600 mt-1">海淀区知春路</div>
+<div class="text-xs text-gray-500 mt-1">设备：小米 13 Ultra</div>
+<div class="text-xs text-orange-700 mt-1">16:38 | 中危</div>
+</div>
+</div>
+</div>
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">探针攻击</div>
+<div class="text-xs text-gray-600 mt-1">朝阳区国贸中心</div>
+<div class="text-xs text-gray-500 mt-1">设备：OPPO Find X5</div>
+<div class="text-xs text-red-700 mt-1">16:37 | 高危</div>
+</div>
+</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-volume-down-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">语音劫持</div>
+<div class="text-xs text-gray-600 mt-1">西城区金融街</div>
+<div class="text-xs text-gray-500 mt-1">设备：vivo X90 Pro</div>
+<div class="text-xs text-orange-700 mt-1">16:35 | 中危</div>
+</div>
+</div>
+</div>
+<div class="border border-yellow-200 rounded-lg p-3 bg-yellow-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-database-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">数据窃取</div>
+<div class="text-xs text-gray-600 mt-1">东城区王府井大街</div>
+<div class="text-xs text-gray-500 mt-1">设备：三星 Galaxy S23</div>
+<div class="text-xs text-yellow-700 mt-1">16:33 | 中危</div>
+</div>
+</div>
+</div>
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">探针攻击</div>
+<div class="text-xs text-gray-600 mt-1">海淀区五道口</div>
+<div class="text-xs text-gray-500 mt-1">设备：iPhone 15 Pro Max</div>
+<div class="text-xs text-red-700 mt-1">16:32 | 高危</div>
+</div>
+</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-volume-down-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">语音劫持</div>
+<div class="text-xs text-gray-600 mt-1">朝阳区三里屯</div>
+<div class="text-xs text-gray-500 mt-1">设备：荣耀 Magic5 Pro</div>
+<div class="text-xs text-orange-700 mt-1">16:30 | 中危</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script id="dropdownControls">
+document.addEventListener('DOMContentLoaded', function() {
+const timeRangeBtn = document.getElementById('timeRangeBtn');
+const timeRangeDropdown = document.getElementById('timeRangeDropdown');
+const regionFilterBtn = document.getElementById('regionFilterBtn');
+const regionFilterDropdown = document.getElementById('regionFilterDropdown');
+timeRangeBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+timeRangeDropdown.classList.toggle('hidden');
+regionFilterDropdown.classList.add('hidden');
+});
+regionFilterBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+regionFilterDropdown.classList.toggle('hidden');
+timeRangeDropdown.classList.add('hidden');
+});
+document.addEventListener('click', function() {
+timeRangeDropdown.classList.add('hidden');
+regionFilterDropdown.classList.add('hidden');
+});
+timeRangeDropdown.addEventListener('click', function(e) {
+if (e.target.tagName === 'BUTTON') {
+timeRangeBtn.querySelector('span').textContent = e.target.textContent;
+timeRangeDropdown.classList.add('hidden');
+}
+});
+regionFilterDropdown.addEventListener('click', function(e) {
+if (e.target.tagName === 'BUTTON') {
+regionFilterBtn.querySelector('span').textContent = e.target.textContent;
+regionFilterDropdown.classList.add('hidden');
+}
+});
+});
+</script>
+<script id="modeToggle">
+document.addEventListener('DOMContentLoaded', function() {
+const heatModeBtn = document.getElementById('heatModeBtn');
+const pointModeBtn = document.getElementById('pointModeBtn');
+heatModeBtn.addEventListener('click', function() {
+heatModeBtn.classList.add('bg-primary', 'text-white');
+heatModeBtn.classList.remove('text-gray-700');
+pointModeBtn.classList.remove('bg-primary', 'text-white');
+pointModeBtn.classList.add('text-gray-700');
+});
+pointModeBtn.addEventListener('click', function() {
+pointModeBtn.classList.add('bg-primary', 'text-white');
+pointModeBtn.classList.remove('text-gray-700');
+heatModeBtn.classList.remove('bg-primary', 'text-white');
+heatModeBtn.classList.add('text-gray-700');
+});
+});
+</script>
+<script id="checkboxControls">
+document.addEventListener('DOMContentLoaded', function() {
+const checkboxes = document.querySelectorAll('label input[type="checkbox"]');
+checkboxes.forEach(checkbox => {
+const label = checkbox.parentElement;
+const checkIcon = label.querySelector('div');
+label.addEventListener('click', function(e) {
+e.preventDefault();
+checkbox.checked = !checkbox.checked;
+if (checkbox.checked) {
+checkIcon.classList.add('bg-primary', 'border-primary');
+checkIcon.classList.remove('bg-white', 'border-gray-300');
+checkIcon.innerHTML = '<i class="ri-check-line text-white text-xs"></i>';
+} else {
+checkIcon.classList.remove('bg-primary', 'border-primary');
+checkIcon.classList.add('bg-white', 'border-gray-300');
+checkIcon.innerHTML = '';
+}
+});
+});
+});
+</script>
+<script id="realTimeUpdate">
+document.addEventListener('DOMContentLoaded', function() {
+function updateTime() {
+const now = new Date();
+const timeString = now.toLocaleTimeString('zh-CN', { hour12: false });
+const timeDisplay = document.querySelector('.absolute.top-4.right-4 .text-xs.text-gray-500');
+if (timeDisplay) {
+timeDisplay.textContent = timeString;
+}
+}
+setInterval(updateTime, 1000);
+updateTime();
+});
+</script>
+</body>
+</html>

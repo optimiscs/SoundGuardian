@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>权限管理 - 慧音执守-物联网语音安全领航者</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#3b82f6',
+        secondary: '#1e40af'
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '4px',
+        DEFAULT: '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        '2xl': '24px',
+        '3xl': '32px',
+        'full': '9999px',
+        'button': '8px'
+      }
+    }
+  }
+}
+</script>
+<style>
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+.custom-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.custom-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb;
+  transition: .4s;
+  border-radius: 20px;
+}
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .switch-slider {
+  background-color: #3b82f6;
+}
+input:checked + .switch-slider:before {
+  transform: translateX(16px);
+}
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.custom-checkbox.checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+.custom-checkbox.checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.custom-radio {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.custom-radio.checked {
+  border-color: #3b82f6;
+}
+.custom-radio.checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+}
+.role-item.active {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+}
+.permission-tree-item.expanded .permission-children {
+  display: block;
+}
+.permission-tree-item:not(.expanded) .permission-children {
+  display: none;
+}
+.permission-tree-item.expanded .expand-icon {
+  transform: rotate(90deg);
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<header class="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-6">
+  <div class="flex items-center space-x-4">
+    <div class="w-8 h-8 flex items-center justify-center">
+      <i class="ri-shield-check-line text-primary text-xl"></i>
+    </div>
+    <h1 class="text-xl font-semibold text-gray-900">慧音执守-物联网语音安全领航者</h1>
+  </div>
+  <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 flex items-center justify-center">
+        <i class="ri-notification-3-line text-gray-600"></i>
+      </div>
+      <span class="text-sm text-gray-700">管理员</span>
+      <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+        <span class="text-white text-sm font-medium">张</span>
+      </div>
+    </div>
+    <button class="text-gray-600 hover:text-gray-900 whitespace-nowrap !rounded-button">
+      <div class="w-5 h-5 flex items-center justify-center">
+        <i class="ri-logout-box-line"></i>
+      </div>
+    </button>
+  </div>
+</header>
+<div class="flex h-[calc(100vh-4rem)]">
+  <aside class="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
+    <nav class="p-4 space-y-2">
+      <a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-dashboard-line"></i>
+        </div>
+        <span class="text-sm font-medium">概览仪表板</span>
+      </a>
+      <a href="trace.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-map-2-line"></i>
+        </div>
+        <span class="text-sm font-medium">热力追踪</span>
+      </a>
+      <a href="predict.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-brain-line"></i>
+        </div>
+        <span class="text-sm font-medium">感知与预测</span>
+      </a>
+      <a href="task.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-task-line"></i>
+        </div>
+        <span class="text-sm font-medium">任务管理</span>
+      </a>
+      <a href="management.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-bar-chart-line"></i>
+        </div>
+        <span class="text-sm font-medium">数据中心</span>
+      </a>
+      <a href="Permission.html" class="flex items-center space-x-3 px-3 py-2 text-primary bg-blue-50 rounded-lg">
+        <div class="w-5 h-5 flex items-center justify-center">
+          <i class="ri-admin-line"></i>
+        </div>
+        <span class="text-sm font-medium">权限管理</span>
+      </a>
+    </nav>
+  </aside>
+  <main class="flex-1 overflow-y-auto bg-gray-50">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-2">
+          <h2 class="text-xl font-semibold text-gray-900">权限管理</h2>
+          <div class="text-sm text-gray-500">管理系统用户的权限设置</div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button id="addUserBtn" class="flex items-center space-x-2 px-3 py-2 text-sm bg-primary text-white rounded-lg hover:bg-blue-600 whitespace-nowrap !rounded-button">
+            <div class="w-4 h-4 flex items-center justify-center">
+              <i class="ri-user-add-line"></i>
+            </div>
+            <span>添加用户</span>
+          </button>
+          <button id="addRoleBtn" class="flex items-center space-x-2 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+            <div class="w-4 h-4 flex items-center justify-center">
+              <i class="ri-group-line"></i>
+            </div>
+            <span>新建角色</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 用户列表管理模块 -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+        <div class="p-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900">用户列表</h3>
+            <div class="flex items-center space-x-3">
+              <div class="relative flex-grow max-w-xs">
+                <input type="text" placeholder="搜索用户" class="w-full px-3 py-2 pl-9 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                  <i class="ri-search-line text-gray-400"></i>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2">
+                  <div class="w-4 h-4 flex items-center justify-center">
+                    <i class="ri-filter-line text-gray-500"></i>
+                  </div>
+                  <select class="text-sm text-gray-700 focus:outline-none border-none bg-transparent pr-8">
+                    <option>所有角色</option>
+                    <option>管理员</option>
+                    <option>安全专家</option>
+                    <option>数据分析师</option>
+                    <option>运维人员</option>
+                    <option>普通用户</option>
+                  </select>
+                  <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 flex items-center justify-center">
+                    <i class="ri-arrow-down-s-line text-gray-400"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="relative">
+                <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2">
+                  <div class="w-4 h-4 flex items-center justify-center">
+                    <i class="ri-user-settings-line text-gray-500"></i>
+                  </div>
+                  <select class="text-sm text-gray-700 focus:outline-none border-none bg-transparent pr-8">
+                    <option>所有状态</option>
+                    <option>已激活</option>
+                    <option>已禁用</option>
+                    <option>待审核</option>
+                  </select>
+                  <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none w-4 h-4 flex items-center justify-center">
+                    <i class="ri-arrow-down-s-line text-gray-400"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">部门</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后登录</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">张</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">张伟明</div>
+                      <div class="text-xs text-gray-500">zhangwm@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">超级管理员</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">系统管理部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-07-01 09:15</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">已激活</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-01-15</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">陈</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">陈雪梅</div>
+                      <div class="text-xs text-gray-500">chenxm@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">数据分析师</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">数据分析部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-30 16:42</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">已激活</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-03-21</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">刘</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">刘德华</div>
+                      <div class="text-xs text-gray-500">liudh@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">安全专家</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">安全运维部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-07-01 08:30</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">已激活</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-02-18</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">王</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">王建国</div>
+                      <div class="text-xs text-gray-500">wangjg@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">设备维护专员</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">设备管理部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-29 14:15</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">已激活</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-04-05</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">赵</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">赵志强</div>
+                      <div class="text-xs text-gray-500">zhaozhq@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">系统管理员</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">系统管理部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-30 10:05</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">已激活</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-03-12</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">林</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">林芳芳</div>
+                      <div class="text-xs text-gray-500">linff@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">普通用户</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">市场部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-28 16:30</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">待审核</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-28</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                      <span class="text-white text-xs">郑</span>
+                    </div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">郑晓东</div>
+                      <div class="text-xs text-gray-500">zhengxd@huiyin.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">威胁处理专员</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">安全运维部</div>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2025-06-25 11:20</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">已禁用</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="text-sm text-gray-900">2024-05-10</div>
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <button class="text-gray-600 hover:text-primary">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-edit-line"></i>
+                      </div>
+                    </button>
+                    <button class="text-gray-600 hover:text-red-600">
+                      <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-delete-bin-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-4 border-t border-gray-200 flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            显示 <span class="font-medium">1</span> 到 <span class="font-medium">7</span> 共 <span class="font-medium">24</span> 条记录
+          </div>
+          <div class="flex items-center space-x-2">
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-500 hover:bg-gray-50 whitespace-nowrap !rounded-button">上一页</button>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-primary text-white whitespace-nowrap !rounded-button">1</button>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 whitespace-nowrap !rounded-button">2</button>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 whitespace-nowrap !rounded-button">3</button>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 whitespace-nowrap !rounded-button">4</button>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 whitespace-nowrap !rounded-button">下一页</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 角色管理和权限分配模块 -->
+      <div class="grid grid-cols-3 gap-6">
+        <!-- 角色管理模块 -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm col-span-1">
+          <div class="p-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">角色管理</h3>
+          </div>
+          <div class="p-4 border-b border-gray-200">
+            <div class="relative">
+              <input type="text" placeholder="搜索角色" class="w-full px-3 py-2 pl-9 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+              <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                <i class="ri-search-line text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+          <div class="h-[400px] overflow-y-auto custom-scrollbar">
+            <div class="role-item active p-3 border-l-4 border-primary cursor-pointer">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="ri-admin-fill text-primary"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">超级管理员</div>
+                    <div class="text-xs text-gray-500">拥有所有权限</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">1 名用户</div>
+              </div>
+            </div>
+            <div class="role-item p-3 border-l-4 border-transparent hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="ri-shield-user-fill text-green-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">安全专家</div>
+                    <div class="text-xs text-gray-500">安全管理相关权限</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">2 名用户</div>
+              </div>
+            </div>
+            <div class="role-item p-3 border-l-4 border-transparent hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i class="ri-bar-chart-fill text-purple-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">数据分析师</div>
+                    <div class="text-xs text-gray-500">数据分析相关权限</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">1 名用户</div>
+              </div>
+            </div>
+            <div class="role-item p-3 border-l-4 border-transparent hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i class="ri-settings-fill text-yellow-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">运维人员</div>
+                    <div class="text-xs text-gray-500">系统运维相关权限</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">2 名用户</div>
+              </div>
+            </div>
+            <div class="role-item p-3 border-l-4 border-transparent hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                    <i class="ri-user-fill text-red-600"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">普通用户</div>
+                    <div class="text-xs text-gray-500">基础查看权限</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">1 名用户</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 角色详情模块 -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm col-span-2">
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900">角色详情</h3>
+              <div class="flex items-center space-x-2">
+                <button class="px-3 py-1 text-sm bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+                  <div class="flex items-center space-x-1">
+                    <div class="w-4 h-4 flex items-center justify-center">
+                      <i class="ri-edit-line"></i>
+                    </div>
+                    <span>编辑角色</span>
+                  </div>
+                </button>
+                <button class="px-3 py-1 text-sm bg-white border border-red-300 text-red-600 rounded-lg hover:bg-red-50 whitespace-nowrap !rounded-button">
+                  <div class="flex items-center space-x-1">
+                    <div class="w-4 h-4 flex items-center justify-center">
+                      <i class="ri-delete-bin-line"></i>
+                    </div>
+                    <span>删除角色</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 border-b border-gray-200">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div class="text-sm font-medium text-gray-500 mb-1">角色名称</div>
+                <div class="text-base text-gray-900">超级管理员</div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-500 mb-1">创建时间</div>
+                <div class="text-base text-gray-900">2024-01-15 10:30</div>
+              </div>
+              <div class="col-span-2">
+                <div class="text-sm font-medium text-gray-500 mb-1">角色描述</div>
+                <div class="text-base text-gray-900">拥有系统所有权限，可以管理所有用户、角色和权限，进行系统配置和维护。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script id="tabControl">
+document.addEventListener('DOMContentLoaded', function() {
+const tabUsers = document.getElementById('tabUsers');
+const tabRoles = document.getElementById('tabRoles');
+const tabPermissions = document.getElementById('tabPermissions');
+const contentUsers = document.getElementById('contentUsers');
+const contentRoles = document.getElementById('contentRoles');
+const contentPermissions = document.getElementById('contentPermissions');
+tabUsers.addEventListener('click', function() {
+tabUsers.classList.add('text-primary', 'border-b-2', 'border-primary');
+tabUsers.classList.remove('text-gray-500');
+tabRoles.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabRoles.classList.add('text-gray-500');
+tabPermissions.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabPermissions.classList.add('text-gray-500');
+contentUsers.classList.remove('hidden');
+contentRoles.classList.add('hidden');
+contentPermissions.classList.add('hidden');
+});
+
+tabRoles.addEventListener('click', function() {
+tabRoles.classList.add('text-primary', 'border-b-2', 'border-primary');
+tabRoles.classList.remove('text-gray-500');
+tabUsers.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabUsers.classList.add('text-gray-500');
+tabPermissions.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabPermissions.classList.add('text-gray-500');
+contentRoles.classList.remove('hidden');
+contentUsers.classList.add('hidden');
+contentPermissions.classList.add('hidden');
+});
+
+tabPermissions.addEventListener('click', function() {
+tabPermissions.classList.add('text-primary', 'border-b-2', 'border-primary');
+tabPermissions.classList.remove('text-gray-500');
+tabUsers.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabUsers.classList.add('text-gray-500');
+tabRoles.classList.remove('text-primary', 'border-b-2', 'border-primary');
+tabRoles.classList.add('text-gray-500');
+contentPermissions.classList.remove('hidden');
+contentUsers.classList.add('hidden');
+contentRoles.classList.add('hidden');
+});
+});
+</script>
+
+<script id="exportButtonControl">
+document.addEventListener('DOMContentLoaded', function() {
+const exportBtn = document.getElementById('exportBtn');
+const exportDropdown = document.getElementById('exportDropdown');
+exportBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+exportDropdown.classList.toggle('show');
+});
+document.addEventListener('click', function(e) {
+if (!exportBtn.contains(e.target) && !exportDropdown.contains(e.target)) {
+exportDropdown.classList.remove('show');
+}
+});
+
+// 处理自定义单选框
+const radioButtons = document.querySelectorAll('.custom-radio');
+radioButtons.forEach(radio => {
+radio.addEventListener('click', function() {
+radioButtons.forEach(r => r.classList.remove('checked'));
+this.classList.add('checked');
+});
+});
+
+// 处理自定义复选框
+const checkboxes = document.querySelectorAll('.custom-checkbox');
+checkboxes.forEach(checkbox => {
+checkbox.addEventListener('click', function() {
+this.classList.toggle('checked');
+});
+});
+});
+</script>
+<script id="modalControl">
+document.addEventListener('DOMContentLoaded', function() {
+const addUserBtn = document.getElementById('addUserBtn');
+const addUserModal = document.getElementById('addUserModal');
+const closeAddUserModal = document.getElementById('closeAddUserModal');
+const cancelAddUser = document.getElementById('cancelAddUser');
+
+const addRoleBtn = document.getElementById('addRoleBtn');
+const addRoleModal = document.getElementById('addRoleModal');
+const closeAddRoleModal = document.getElementById('closeAddRoleModal');
+const cancelAddRole = document.getElementById('cancelAddRole');
+if (addUserBtn) {
+addUserBtn.addEventListener('click', function() {
+addUserModal.classList.remove('hidden');
+});
+}
+
+if (closeAddUserModal) {
+closeAddUserModal.addEventListener('click', function() {
+addUserModal.classList.add('hidden');
+});
+}
+
+if (cancelAddUser) {
+cancelAddUser.addEventListener('click', function() {
+addUserModal.classList.add('hidden');
+});
+}
+
+if (addRoleBtn) {
+addRoleBtn.addEventListener('click', function() {
+addRoleModal.classList.remove('hidden');
+});
+}
+
+if (closeAddRoleModal) {
+closeAddRoleModal.addEventListener('click', function() {
+addRoleModal.classList.add('hidden');
+});
+}
+
+if (cancelAddRole) {
+cancelAddRole.addEventListener('click', function() {
+addRoleModal.classList.add('hidden');
+});
+}
+});
+</script>
+</body>
+</html>

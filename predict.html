@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>感知与预测 - 慧音执守-物联网语音安全领航者</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+primary: '#3b82f6',
+secondary: '#1e40af'
+},
+borderRadius: {
+'none': '0px',
+'sm': '4px',
+DEFAULT: '8px',
+'md': '12px',
+'lg': '16px',
+'xl': '20px',
+'2xl': '24px',
+'3xl': '32px',
+'full': '9999px',
+'button': '8px'
+}
+}
+}
+}
+</script>
+<style>
+:where([class^="ri-"])::before {
+content: "\f3c2";
+}
+.custom-scrollbar::-webkit-scrollbar {
+width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+background: #f1f5f9;
+border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+background: #cbd5e1;
+border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+background: #94a3b8;
+}
+.ai-pulse {
+animation: aiPulse 3s infinite;
+}
+@keyframes aiPulse {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.8; transform: scale(1.05); }
+}
+.threat-indicator {
+animation: threatBlink 2s infinite;
+}
+@keyframes threatBlink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.6; }
+}
+.prediction-glow {
+box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<header class="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-6">
+<div class="flex items-center space-x-4">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-shield-check-line text-primary text-xl"></i>
+</div>
+<h1 class="text-xl font-semibold text-gray-900">慧音执守-物联网语音安全领航者</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-notification-3-line text-gray-600"></i>
+</div>
+<span class="text-sm text-gray-700">管理员</span>
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+<span class="text-white text-sm font-medium">张</span>
+</div>
+</div>
+<button class="text-gray-600 hover:text-gray-900 whitespace-nowrap !rounded-button">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-logout-box-line"></i>
+</div>
+</button>
+</div>
+</header>
+<div class="flex h-[calc(100vh-4rem)]">
+<aside class="w-64 bg-white shadow-sm border-r border-gray-200 overflow-y-auto">
+<nav class="p-4 space-y-2">
+<a href="dashboard.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-dashboard-line"></i>
+</div>
+<span class="text-sm font-medium">概览仪表板</span>
+</a>
+<a href="trace.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-map-2-line"></i>
+</div>
+<span class="text-sm font-medium">热力追踪</span>
+</a>
+<a href="predict.html" class="flex items-center space-x-3 px-3 py-2 text-primary bg-blue-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-brain-line"></i>
+</div>
+<span class="text-sm font-medium">感知与预测</span>
+</a>
+<a href="task.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-task-line"></i>
+</div>
+<span class="text-sm font-medium">任务管理</span>
+</a>
+<a href="management.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-bar-chart-line"></i>
+</div>
+<span class="text-sm font-medium">数据中心</span>
+</a>
+<a href="Permission.html" class="flex items-center space-x-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-admin-line"></i>
+</div>
+<span class="text-sm font-medium">权限管理</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 flex overflow-hidden">
+<div class="flex-1 flex flex-col bg-white">
+<div class="p-4 border-b border-gray-200 bg-white">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<h2 class="text-lg font-semibold text-gray-900">AI 智能感知与预测</h2>
+<div class="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+<button id="realTimeBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-md whitespace-nowrap !rounded-button">实时分析</button>
+<button id="historyBtn" class="px-3 py-1 text-sm text-gray-700 rounded-md whitespace-nowrap !rounded-button">历史趋势</button>
+</div>
+</div>
+<div class="flex items-center space-x-3">
+<div class="relative">
+<button id="modelBtn" class="flex items-center space-x-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+<span>深度学习模型</span>
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-arrow-down-s-line text-gray-500"></i>
+</div>
+</button>
+<div id="modelDropdown" class="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 hidden">
+<div class="p-2">
+<button class="w-full text-left px-3 py-2 text-sm bg-blue-50 text-primary rounded-md whitespace-nowrap !rounded-button">深度学习模型</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">随机森林模型</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">支持向量机</button>
+<button class="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-md whitespace-nowrap !rounded-button">神经网络模型</button>
+</div>
+</div>
+</div>
+<button id="refreshBtn" class="p-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 whitespace-nowrap !rounded-button">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-refresh-line"></i>
+</div>
+</button>
+</div>
+</div>
+</div>
+<div class="flex-1 p-4 overflow-y-auto custom-scrollbar">
+<div class="grid grid-cols-2 gap-4 h-full">
+<div class="bg-white rounded-lg border border-gray-200 p-4 prediction-glow">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-semibold text-gray-900">攻击趋势预测</h3>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div>
+<span class="text-xs text-gray-500">AI 预测中</span>
+</div>
+</div>
+<div id="trendChart" class="h-64 w-full"></div>
+<div class="mt-4 grid grid-cols-3 gap-3">
+<div class="text-center p-2 bg-blue-50 rounded-lg">
+<div class="text-lg font-bold text-blue-600">85%</div>
+<div class="text-xs text-blue-700">预测准确率</div>
+</div>
+<div class="text-center p-2 bg-red-50 rounded-lg">
+<div class="text-lg font-bold text-red-600">+23%</div>
+<div class="text-xs text-red-700">未来 24h 增长</div>
+</div>
+<div class="text-center p-2 bg-orange-50 rounded-lg">
+<div class="text-lg font-bold text-orange-600">高</div>
+<div class="text-xs text-orange-700">风险等级</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg border border-gray-200 p-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-semibold text-gray-900">风险评估模型</h3>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-blue-500 rounded-full ai-pulse"></div>
+<span class="text-xs text-gray-500">模型运行中</span>
+</div>
+</div>
+<div id="riskChart" class="h-64 w-full"></div>
+<div class="mt-4 space-y-2">
+<div class="flex items-center justify-between p-2 bg-red-50 rounded-lg">
+<span class="text-sm text-gray-700">探针攻击风险</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-14 h-2 bg-red-500 rounded-full"></div>
+</div>
+<span class="text-sm font-medium text-red-600">89%</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
+<span class="text-sm text-gray-700">语音劫持风险</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-12 h-2 bg-orange-500 rounded-full"></div>
+</div>
+<span class="text-sm font-medium text-orange-600">67%</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 bg-yellow-50 rounded-lg">
+<span class="text-sm text-gray-700">数据窃取风险</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-8 h-2 bg-yellow-500 rounded-full"></div>
+</div>
+<span class="text-sm font-medium text-yellow-600">45%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg border border-gray-200 p-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-semibold text-gray-900">异常行为检测</h3>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-orange-500 rounded-full threat-indicator"></div>
+<span class="text-xs text-gray-500">检测到 12 个异常</span>
+</div>
+</div>
+<div class="space-y-3 h-64 overflow-y-auto custom-scrollbar">
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-error-warning-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">异常通信模式</div>
+<div class="text-xs text-gray-600 mt-1">检测到频繁的短时间连接请求</div>
+<div class="text-xs text-red-700 mt-1">16:45 | 异常评分: 92/100</div>
+</div>
+</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">设备行为异常</div>
+<div class="text-xs text-gray-600 mt-1">设备在非正常时间段活跃</div>
+<div class="text-xs text-orange-700 mt-1">16:43 | 异常评分: 78/100</div>
+</div>
+</div>
+</div>
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-error-warning-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">流量模式异常</div>
+<div class="text-xs text-gray-600 mt-1">检测到大量异常数据传输</div>
+<div class="text-xs text-red-700 mt-1">16:41 | 异常评分: 95/100</div>
+</div>
+</div>
+</div>
+<div class="border border-yellow-200 rounded-lg p-3 bg-yellow-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-information-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">访问模式异常</div>
+<div class="text-xs text-gray-600 mt-1">用户访问路径与历史模式不符</div>
+<div class="text-xs text-yellow-700 mt-1">16:39 | 异常评分: 65/100</div>
+</div>
+</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-start space-x-2">
+<div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+<i class="ri-alert-line text-white text-xs"></i>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-sm font-medium text-gray-900">地理位置异常</div>
+<div class="text-xs text-gray-600 mt-1">设备在短时间内跨区域移动</div>
+<div class="text-xs text-orange-700 mt-1">16:37 | 异常评分: 73/100</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg border border-gray-200 p-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-semibold text-gray-900">威胁预警系统</h3>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 bg-red-500 rounded-full threat-indicator"></div>
+<span class="text-xs text-gray-500">高危预警</span>
+</div>
+</div>
+<div class="space-y-3 h-64 overflow-y-auto custom-scrollbar">
+<div class="border-l-4 border-red-500 bg-red-50 p-3 rounded-r-lg">
+<div class="flex items-start justify-between">
+<div>
+<div class="text-sm font-medium text-red-800">紧急威胁预警</div>
+<div class="text-xs text-red-700 mt-1">预测朝阳区将在未来 2 小时内发生大规模探针攻击</div>
+<div class="text-xs text-red-600 mt-2">影响范围: 建国门外大街周边 500m</div>
+</div>
+<span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">高危</span>
+</div>
+<div class="mt-2 text-xs text-red-700">
+建议措施: 立即加强该区域监控，通知相关设备用户
+</div>
+</div>
+<div class="border-l-4 border-orange-500 bg-orange-50 p-3 rounded-r-lg">
+<div class="flex items-start justify-between">
+<div>
+<div class="text-sm font-medium text-orange-800">中等威胁预警</div>
+<div class="text-xs text-orange-700 mt-1">海淀区中关村地区语音劫持活动增加</div>
+<div class="text-xs text-orange-600 mt-2">影响范围: 中关村大街沿线</div>
+</div>
+<span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">中危</span>
+</div>
+<div class="mt-2 text-xs text-orange-700">
+建议措施: 提醒用户注意通话安全，增加巡检频次
+</div>
+</div>
+<div class="border-l-4 border-yellow-500 bg-yellow-50 p-3 rounded-r-lg">
+<div class="flex items-start justify-between">
+<div>
+<div class="text-sm font-medium text-yellow-800">潜在威胁预警</div>
+<div class="text-xs text-yellow-700 mt-1">西城区金融街检测到异常数据流量</div>
+<div class="text-xs text-yellow-600 mt-2">影响范围: 金融街核心区域</div>
+</div>
+<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">中危</span>
+</div>
+<div class="mt-2 text-xs text-yellow-700">
+建议措施: 持续监控数据流量，准备应急响应
+</div>
+</div>
+<div class="border-l-4 border-blue-500 bg-blue-50 p-3 rounded-r-lg">
+<div class="flex items-start justify-between">
+<div>
+<div class="text-sm font-medium text-blue-800">系统预警</div>
+<div class="text-xs text-blue-700 mt-1">AI 模型检测到新型攻击模式</div>
+<div class="text-xs text-blue-600 mt-2">影响范围: 全市范围</div>
+</div>
+<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">信息</span>
+</div>
+<div class="mt-2 text-xs text-blue-700">
+建议措施: 更新威胁特征库，优化检测算法
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-96 bg-white border-l border-gray-200 flex flex-col">
+<div class="p-4 border-b border-gray-200">
+<h3 class="text-lg font-semibold text-gray-900 mb-4">AI 分析统计</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-blue-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-blue-600">97.3%</div>
+<div class="text-xs text-blue-700 mt-1">模型准确率</div>
+</div>
+<div class="bg-green-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-green-600">1,247</div>
+<div class="text-xs text-green-700 mt-1">已处理样本</div>
+</div>
+<div class="bg-purple-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-purple-600">23</div>
+<div class="text-xs text-purple-700 mt-1">活跃模型</div>
+</div>
+<div class="bg-orange-50 rounded-lg p-3">
+<div class="text-2xl font-bold text-orange-600">156ms</div>
+<div class="text-xs text-orange-700 mt-1">平均响应时间</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-b border-gray-200">
+<h4 class="text-sm font-medium text-gray-900 mb-3">模型参数配置</h4>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-sm text-gray-700">学习率</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-10 h-2 bg-blue-500 rounded-full"></div>
+</div>
+<span class="text-xs text-gray-500">0.001</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-gray-700">批处理大小</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-8 h-2 bg-blue-500 rounded-full"></div>
+</div>
+<span class="text-xs text-gray-500">32</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-sm text-gray-700">训练轮次</span>
+<div class="flex items-center space-x-2">
+<div class="w-16 h-2 bg-gray-200 rounded-full">
+<div class="w-12 h-2 bg-blue-500 rounded-full"></div>
+</div>
+<span class="text-xs text-gray-500">100</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="p-4 border-b border-gray-200">
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-medium text-gray-900">预测准确率指标</h4>
+<button class="text-xs text-primary hover:text-blue-700 whitespace-nowrap !rounded-button">详细报告</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="p-4 space-y-3">
+<div class="border border-green-200 rounded-lg p-3 bg-green-50">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium text-gray-900">探针攻击预测</span>
+<span class="text-sm font-bold text-green-600">94.2%</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full">
+<div class="w-[94%] h-2 bg-green-500 rounded-full"></div>
+</div>
+<div class="text-xs text-gray-600 mt-1">过去 7 天平均准确率</div>
+</div>
+<div class="border border-blue-200 rounded-lg p-3 bg-blue-50">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium text-gray-900">语音劫持预测</span>
+<span class="text-sm font-bold text-blue-600">89.7%</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full">
+<div class="w-[90%] h-2 bg-blue-500 rounded-full"></div>
+</div>
+<div class="text-xs text-gray-600 mt-1">过去 7 天平均准确率</div>
+</div>
+<div class="border border-purple-200 rounded-lg p-3 bg-purple-50">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium text-gray-900">数据窃取预测</span>
+<span class="text-sm font-bold text-purple-600">91.5%</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full">
+<div class="w-[92%] h-2 bg-purple-500 rounded-full"></div>
+</div>
+<div class="text-xs text-gray-600 mt-1">过去 7 天平均准确率</div>
+</div>
+<div class="border border-orange-200 rounded-lg p-3 bg-orange-50">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium text-gray-900">异常行为检测</span>
+<span class="text-sm font-bold text-orange-600">87.3%</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full">
+<div class="w-[87%] h-2 bg-orange-500 rounded-full"></div>
+</div>
+<div class="text-xs text-gray-600 mt-1">过去 7 天平均准确率</div>
+</div>
+<div class="border border-red-200 rounded-lg p-3 bg-red-50">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium text-gray-900">威胁等级评估</span>
+<span class="text-sm font-bold text-red-600">92.8%</span>
+</div>
+<div class="w-full h-2 bg-gray-200 rounded-full">
+<div class="w-[93%] h-2 bg-red-500 rounded-full"></div>
+</div>
+<div class="text-xs text-gray-600 mt-1">过去 7 天平均准确率</div>
+</div>
+<div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+<div class="text-sm font-medium text-gray-900 mb-2">模型训练状态</div>
+<div class="space-y-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-gray-600">最后更新</span>
+<span class="text-gray-900">2 分钟前</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-gray-600">训练样本</span>
+<span class="text-gray-900">847,392 条</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-gray-600">模型版本</span>
+<span class="text-gray-900">v2.3.1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script id="dropdownControls">
+document.addEventListener('DOMContentLoaded', function() {
+const modelBtn = document.getElementById('modelBtn');
+const modelDropdown = document.getElementById('modelDropdown');
+modelBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+modelDropdown.classList.toggle('hidden');
+});
+document.addEventListener('click', function() {
+modelDropdown.classList.add('hidden');
+});
+modelDropdown.addEventListener('click', function(e) {
+if (e.target.tagName === 'BUTTON') {
+modelBtn.querySelector('span').textContent = e.target.textContent;
+modelDropdown.classList.add('hidden');
+}
+});
+});
+</script>
+<script id="modeToggle">
+document.addEventListener('DOMContentLoaded', function() {
+const realTimeBtn = document.getElementById('realTimeBtn');
+const historyBtn = document.getElementById('historyBtn');
+realTimeBtn.addEventListener('click', function() {
+realTimeBtn.classList.add('bg-primary', 'text-white');
+realTimeBtn.classList.remove('text-gray-700');
+historyBtn.classList.remove('bg-primary', 'text-white');
+historyBtn.classList.add('text-gray-700');
+});
+historyBtn.addEventListener('click', function() {
+historyBtn.classList.add('bg-primary', 'text-white');
+historyBtn.classList.remove('text-gray-700');
+realTimeBtn.classList.remove('bg-primary', 'text-white');
+realTimeBtn.classList.add('text-gray-700');
+});
+});
+</script>
+<script id="trendChart">
+document.addEventListener('DOMContentLoaded', function() {
+const trendChart = echarts.init(document.getElementById('trendChart'));
+const trendOption = {
+animation: false,
+grid: { top: 10, right: 10, bottom: 30, left: 40 },
+xAxis: {
+type: 'category',
+data: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+axisLine: { lineStyle: { color: '#e5e7eb' } },
+axisTick: { show: false },
+axisLabel: { color: '#6b7280', fontSize: 11 }
+},
+yAxis: {
+type: 'value',
+axisLine: { show: false },
+axisTick: { show: false },
+axisLabel: { color: '#6b7280', fontSize: 11 },
+splitLine: { lineStyle: { color: '#f3f4f6' } }
+},
+series: [{
+data: [120, 180, 240, 320, 280, 380, 420],
+type: 'line',
+smooth: true,
+lineStyle: { color: 'rgba(87, 181, 231, 1)', width: 3 },
+areaStyle: { color: 'rgba(87, 181, 231, 0.1)' },
+symbol: 'none'
+}, {
+data: [100, 150, 200, 280, 250, 340, 380],
+type: 'line',
+smooth: true,
+lineStyle: { color: 'rgba(141, 211, 199, 1)', width: 2, type: 'dashed' },
+symbol: 'none'
+}],
+tooltip: {
+trigger: 'axis',
+backgroundColor: 'rgba(255, 255, 255, 0.9)',
+borderColor: '#e5e7eb',
+textStyle: { color: '#1f2937' }
+}
+};
+trendChart.setOption(trendOption);
+});
+</script>
+<script id="riskChart">
+document.addEventListener('DOMContentLoaded', function() {
+const riskChart = echarts.init(document.getElementById('riskChart'));
+const riskOption = {
+animation: false,
+grid: { top: 10, right: 10, bottom: 10, left: 10 },
+series: [{
+type: 'pie',
+radius: ['40%', '70%'],
+center: ['50%', '50%'],
+data: [
+{ value: 89, name: '探针攻击', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
+{ value: 67, name: '语音劫持', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
+{ value: 45, name: '数据窃取', itemStyle: { color: 'rgba(251, 191, 114, 1)' } },
+{ value: 23, name: '其他威胁', itemStyle: { color: 'rgba(252, 141, 98, 1)' } }
+],
+label: { show: false },
+emphasis: { scale: false }
+}],
+tooltip: {
+trigger: 'item',
+backgroundColor: 'rgba(255, 255, 255, 0.9)',
+borderColor: '#e5e7eb',
+textStyle: { color: '#1f2937' }
+}
+};
+riskChart.setOption(riskOption);
+});
+</script>
+</body>
+</html>

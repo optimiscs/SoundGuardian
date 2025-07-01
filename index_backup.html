@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>慧音执守 - 物联网语音安全的领航者</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#3b82f6',secondary:'#10b981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Inter', 'Noto Sans SC', sans-serif;
+}
+.gradient-text {
+background: linear-gradient(90deg, #3b82f6, #10b981);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.wave-animation {
+position: absolute;
+width: 100%;
+height: 100%;
+background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%233b82f6" fill-opacity="0.1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+background-size: cover;
+background-position: bottom;
+z-index: 0;
+opacity: 0.7;
+}
+.hero-image {
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+background-size: cover;
+background-position: center;
+z-index: -1;
+}
+.feature-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+}
+.tech-section {
+background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 90%);
+}
+.security-section {
+background-color: #f8fafc;
+background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+input:focus, button:focus {
+outline: none;
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 50px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+transition: .4s;
+border-radius: 24px;
+}
+.slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .slider {
+background-color: #3b82f6;
+}
+input:checked + .slider:before {
+transform: translateX(26px);
+}
+.auth-form {
+transition: all 0.3s ease-in-out;
+}
+.auth-form.hidden {
+opacity: 0;
+transform: translateY(-10px);
+}
+.auth-form:not(.hidden) {
+opacity: 1;
+transform: translateY(0);
+}
+/* 确保模态框正确居中 */
+#authModal {
+display: flex !important;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+padding: 1rem;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+}
+#authModal.hidden {
+display: none !important;
+}
+#authModal > div {
+margin: auto;
+position: relative;
+z-index: 10;
+}
+/* 确保在小屏幕上也能正确显示 */
+@media (max-height: 600px) {
+#authModal {
+align-items: flex-start;
+padding-top: 2rem;
+}
+#authModal > div {
+max-height: calc(100vh - 4rem);
+}
+}
+</style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen">
+<!-- 导航栏 -->
+<nav class="fixed top-0 w-full bg-white/90 backdrop-blur-sm z-50 shadow-sm">
+<div class="container mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<div class="w-10 h-10 flex items-center justify-center bg-primary rounded-full text-white">
+<i class="ri-shield-keyhole-line ri-lg"></i>
+</div>
+<span class="text-2xl font-['Pacifico'] text-gray-800">慧音执守</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<a href="#features" class="text-gray-600 hover:text-primary transition-colors">核心功能</a>
+<a href="#technology" class="text-gray-600 hover:text-primary transition-colors">技术特色</a>
+<a href="#security" class="text-gray-600 hover:text-primary transition-colors">安全保障</a>
+<a href="#value" class="text-gray-600 hover:text-primary transition-colors">产品价值</a>
+</div>
+<div class="flex items-center space-x-4">
+<button id="loginBtn" class="px-4 py-2 text-primary border border-primary hover:bg-primary/5 transition-colors !rounded-button whitespace-nowrap">登录</button>
+
+<!-- 登录/注册模态框 -->
+<div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-xl p-6 w-full max-w-md relative max-h-[85vh] overflow-y-auto shadow-2xl">
+    <button id="closeAuthModal" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+      <i class="ri-close-line ri-lg"></i>
+    </button>
+    
+    <!-- 登录表单 -->
+    <div id="loginForm" class="auth-form">
+      <div class="text-center mb-6">
+        <h3 class="text-2xl font-semibold text-gray-800">登录</h3>
+        <p class="text-gray-600 mt-2">欢迎回来，请登录您的账号</p>
+      </div>
+      <form id="loginSubmitForm" class="space-y-4">
+        <div>
+          <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-mail-line text-gray-400"></i>
+            </div>
+            <input type="email" id="loginEmail" name="email" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入邮箱地址" required>
+          </div>
+        </div>
+        
+        <div>
+          <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-lock-line text-gray-400"></i>
+            </div>
+            <input type="password" id="loginPassword" name="password" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入密码" required>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <label class="flex items-center">
+            <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary">
+            <span class="ml-2 text-sm text-gray-600">记住我</span>
+          </label>
+          <a href="#" class="text-sm text-primary hover:text-primary/80">忘记密码？</a>
+        </div>
+        
+        <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+          登录
+        </button>
+      </form>
+      
+      <div class="mt-4 text-center text-sm text-gray-600">
+        还没有账号？ <button id="showRegister" class="text-primary hover:text-primary/80 font-medium">立即注册</button>
+      </div>
+    </div>
+
+    <!-- 注册表单 -->
+    <div id="registerForm" class="auth-form hidden">
+      <div class="text-center mb-6">
+        <h3 class="text-2xl font-semibold text-gray-800">注册</h3>
+        <p class="text-gray-600 mt-2">创建您的慧音执守账号</p>
+      </div>
+      <form id="registerSubmitForm" class="space-y-4">
+        <div>
+          <label for="registerName" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-user-line text-gray-400"></i>
+            </div>
+            <input type="text" id="registerName" name="name" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入您的姓名" required>
+          </div>
+        </div>
+        
+        <div>
+          <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-mail-line text-gray-400"></i>
+            </div>
+            <input type="email" id="registerEmail" name="email" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入邮箱地址" required>
+          </div>
+        </div>
+        
+        <div>
+          <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-lock-line text-gray-400"></i>
+            </div>
+            <input type="password" id="registerPassword" name="password" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请输入密码" required>
+          </div>
+        </div>
+        
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="ri-lock-line text-gray-400"></i>
+            </div>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="请再次输入密码" required>
+          </div>
+        </div>
+        
+        <div class="flex items-start">
+          <input type="checkbox" id="agreeTerms" name="agreeTerms" class="w-4 h-4 mt-1 text-primary border-gray-300 rounded focus:ring-primary" required>
+          <label for="agreeTerms" class="ml-2 text-sm text-gray-600">
+            我已阅读并同意 <a href="#" class="text-primary hover:text-primary/80">服务条款</a> 和 <a href="#" class="text-primary hover:text-primary/80">隐私政策</a>
+          </label>
+        </div>
+        
+        <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+          注册
+        </button>
+      </form>
+      
+      <div class="mt-4 text-center text-sm text-gray-600">
+        已有账号？ <button id="showLogin" class="text-primary hover:text-primary/80 font-medium">立即登录</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="px-4 py-2 bg-primary text-white hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">免费试用</button>
+</div>
+</div>
+</nav>
+<!-- 英雄区 -->
+<section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+<div class="hero-image" style="background-image: url('https://readdy.ai/api/search-image?query=A%20modern%2C%20high-tech%20digital%20security%20concept%20with%20abstract%20blue%20waves%20and%20sound%20visualization%20patterns.%20The%20image%20should%20have%20a%20gradient%20from%20dark%20blue%20to%20light%20blue%20on%20the%20right%20side%2C%20with%20empty%20space%20on%20the%20left%20for%20text%20overlay.%20Include%20subtle%20circuit%20board%20patterns%20and%20sound%20wave%20visualizations%20that%20represent%20voice%20security%20technology%20for%20IoT%20devices.%20The%20style%20should%20be%20clean%2C%20professional%2C%20and%20futuristic%20with%20a%20focus%20on%20cybersecurity.&width=1920&height=1080&seq=hero-bg-1&orientation=landscape');"></div>
+<div class="container mx-auto px-4 md:px-6 relative z-10">
+<div class="w-full flex flex-col md:flex-row items-center">
+<div class="w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+慧音执守
+<span class="block text-xl md:text-2xl font-normal mt-2 text-blue-200">Huiyin Guardian</span>
+</h1>
+<p class="text-xl md:text-2xl font-semibold text-white mb-4">物联网语音安全的领航者</p>
+<p class="text-white/80 text-lg max-w-xl mb-8">
+在物联网时代，语音控制已成为主流交互方式，但也带来了新的安全风险。慧音执守提供全方位的语音安全防护，守护您的数字生活。
+</p>
+<div class="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+<button class="px-6 py-3 bg-primary text-white font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap w-full sm:w-auto">
+<i class="ri-presentation-line ri-lg mr-2 align-middle"></i>
+预约演示
+</button>
+<button class="px-6 py-3 bg-white text-primary font-medium hover:bg-gray-50 transition-colors !rounded-button whitespace-nowrap w-full sm:w-auto">
+<i class="ri-file-list-3-line ri-lg mr-2 align-middle"></i>
+技术白皮书
+</button>
+</div>
+</div>
+<div class="w-full md:w-1/2 flex justify-center md:justify-end">
+<div class="relative w-full max-w-md">
+<div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-500/10 rounded-full filter blur-xl"></div>
+<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-green-500/10 rounded-full filter blur-xl"></div>
+<div class="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 flex items-center justify-center bg-primary rounded-full text-white">
+<i class="ri-shield-keyhole-line"></i>
+</div>
+<span class="text-lg font-semibold text-white">安全状态监控</span>
+</div>
+<div class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
+系统正常
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-white/10 rounded-xl p-4">
+<p class="text-sm text-white/60 mb-1">今日拦截</p>
+<p class="text-2xl font-bold text-white">247</p>
+<p class="text-xs text-green-400">+12% 较昨日</p>
+</div>
+<div class="bg-white/10 rounded-xl p-4">
+<p class="text-sm text-white/60 mb-1">威胁等级</p>
+<p class="text-2xl font-bold text-white">低</p>
+<p class="text-xs text-green-400">区域内平稳</p>
+</div>
+</div>
+<div class="bg-white/10 rounded-xl p-4 mb-6">
+<div class="flex justify-between items-center mb-2">
+<p class="text-sm text-white/60">实时语音安全监测</p>
+<div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+</div>
+<div class="h-16 w-full">
+<div id="waveChart" class="w-full h-full"></div>
+</div>
+</div>
+<div class="flex justify-between">
+<button class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors !rounded-button whitespace-nowrap">
+<i class="ri-refresh-line mr-1"></i>
+刷新
+</button>
+<button class="px-3 py-2 bg-primary text-white text-sm rounded-lg transition-colors !rounded-button whitespace-nowrap">
+<i class="ri-shield-check-line mr-1"></i>
+详细报告
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 问题阐述区 -->
+<section class="py-16 bg-gray-50">
+<div class="container mx-auto px-4 md:px-6">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold mb-4">语音安全面临的三大挑战</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">
+随着物联网设备的普及，语音交互带来便利的同时也引发了新的安全隐患。慧音执守专注解决这些关键挑战。
+</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-14 h-14 flex items-center justify-center bg-blue-100 text-primary rounded-full mb-6">
+<i class="ri-eye-off-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-3">识别难</h3>
+<p class="text-gray-600 mb-4">
+语音攻击往往隐藏在日常对话中，或使用超声波等人耳无法感知的频率，使传统安全系统难以识别和拦截。
+</p>
+<div class="h-40 w-full">
+<div id="challengeChart1" class="w-full h-full"></div>
+</div>
+</div>
+<div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-14 h-14 flex items-center justify-center bg-blue-100 text-primary rounded-full mb-6">
+<i class="ri-spy-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-3">隐蔽性高</h3>
+<p class="text-gray-600 mb-4">
+攻击者可以通过对抗性样本、模糊指令等技术绕过安全检测，在不被察觉的情况下完成攻击行为。
+</p>
+<div class="h-40 w-full">
+<div id="challengeChart2" class="w-full h-full"></div>
+</div>
+</div>
+<div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-14 h-14 flex items-center justify-center bg-blue-100 text-primary rounded-full mb-6">
+<i class="ri-error-warning-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-3">不可预知</h3>
+<p class="text-gray-600 mb-4">
+语音攻击手段不断创新，传统的基于特征库的防御方式难以应对未知的新型攻击模式。
+</p>
+<div class="h-40 w-full">
+<div id="challengeChart3" class="w-full h-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 核心功能模块 -->
+<section id="features" class="py-16">
+<div class="container mx-auto px-4 md:px-6">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold mb-4">核心功能模块</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">
+慧音执守平台由一套功能强大的模块化组件构成，旨在提供端到端的语音安全保障。
+</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- 概览仪表盘 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20modern%2C%20clean%20dashboard%20interface%20showing%20voice%20security%20metrics.%20The%20dashboard%20has%20multiple%20widgets%20displaying%20security%20status%2C%20threat%20levels%2C%20and%20real-time%20monitoring%20data.%20Include%20graphs%2C%20charts%2C%20and%20status%20indicators%20with%20a%20blue%20and%20white%20color%20scheme.%20The%20design%20should%20be%20professional%20and%20intuitive%2C%20showing%20an%20overview%20of%20a%20voice%20security%20system%20with%20clean%20typography%20and%20modern%20UI%20elements.&width=600&height=400&seq=dashboard-1&orientation=landscape" alt="概览仪表盘" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-dashboard-3-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">概览仪表盘</h3>
+</div>
+<p class="text-gray-600 mb-4">
+作为平台的指挥中心，实时、直观地展示整个系统的运行状态，提供关键指标和警报，帮助管理员时刻保持态势感知。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">实时更新</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- 威胁热力图追踪 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20detailed%20heat%20map%20visualization%20showing%20geographic%20distribution%20of%20voice%20security%20threats.%20The%20map%20should%20show%20various%20regions%20with%20different%20color%20intensities%20representing%20threat%20levels%20%28red%20for%20high%20threat%20areas%2C%20yellow%20for%20medium%2C%20and%20green%20for%20low%29.%20Include%20city%20markers%20and%20data%20points%20overlaid%20on%20a%20modern%20map%20interface.%20The%20design%20should%20be%20clean%20and%20professional%20with%20a%20focus%20on%20data%20visualization%20for%20security%20monitoring.&width=600&height=400&seq=heatmap-1&orientation=landscape" alt="威胁热力图追踪" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-map-pin-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">威胁热力图追踪</h3>
+</div>
+<p class="text-gray-600 mb-4">
+将语音安全威胁进行动态、可视化的地理位置呈现，直观识别高风险区域和攻击热点，实现主动式安全防护。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">地理分布分析</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- AI感知与预测 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20futuristic%20AI%20visualization%20showing%20voice%20pattern%20analysis%20and%20threat%20prediction.%20The%20image%20should%20display%20sound%20waves%20being%20processed%20through%20neural%20network%20layers%2C%20with%20machine%20learning%20algorithms%20identifying%20patterns.%20Include%20visual%20elements%20that%20represent%20SVM%2C%20LSTM%2C%20and%20GRU%20models%20analyzing%20audio%20data.%20The%20design%20should%20be%20high-tech%20with%20blue%20and%20white%20color%20scheme%2C%20showing%20the%20AIs%20ability%20to%20detect%20voice-based%20security%20threats%20with%20abstract%20data%20visualization%20elements.&width=600&height=400&seq=ai-predict-1&orientation=landscape" alt="AI感知与预测" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-brain-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">AI感知与预测</h3>
+</div>
+<p class="text-gray-600 mb-4">
+融合多种机器学习模型，实现高达96.2%的威胁识别准确率，能检测已知攻击并预测未来威胁趋势。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">深度学习驱动</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- 安全任务管理 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20collaborative%20security%20task%20management%20interface%20showing%20a%20community-based%20defense%20system.%20The%20image%20should%20display%20a%20dashboard%20with%20task%20assignments%2C%20user%20contributions%2C%20and%20reward%20mechanisms%20for%20security%20data%20collection.%20Include%20elements%20like%20task%20cards%2C%20progress%20indicators%2C%20and%20user%20participation%20metrics.%20The%20design%20should%20be%20clean%20and%20professional%2C%20illustrating%20how%20users%20can%20contribute%20to%20voice%20security%20through%20organized%20task%20management.&width=600&height=400&seq=task-mgmt-1&orientation=landscape" alt="安全任务管理" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-task-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">安全任务管理</h3>
+</div>
+<p class="text-gray-600 mb-4">
+通过群智感知任务管理系统促进协同防御，向特定区域用户发布数据采集任务，通过激励机制鼓励用户贡献。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">协同防御</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- 数据中心 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20sophisticated%20data%20analytics%20center%20visualization%20for%20voice%20security.%20The%20image%20should%20show%20multiple%20data%20processing%20stages%20with%20analytics%20dashboards%2C%20data%20flow%20diagrams%2C%20and%20report%20generation%20interfaces.%20Include%20elements%20that%20represent%20data%20cleaning%2C%20analysis%2C%20and%20aggregation%20with%20visual%20representations%20of%20insights%20being%20generated.%20The%20design%20should%20be%20modern%20and%20technical%2C%20illustrating%20how%20raw%20voice%20security%20data%20is%20transformed%20into%20actionable%20intelligence%20with%20clean%2C%20professional%20UI%20elements.&width=600&height=400&seq=data-center-1&orientation=landscape" alt="数据中心" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-database-2-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">数据中心</h3>
+</div>
+<p class="text-gray-600 mb-4">
+处理从用户和传感器收集的海量数据，生成智能周报和综合威胁分析报告，为安全决策提供坚实基础。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">数据驱动决策</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- 精细化权限管理 -->
+<div class="feature-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300">
+<div class="h-48 bg-gray-100 relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20detailed%20role-based%20access%20control%20system%20interface%20for%20security%20management.%20The%20image%20should%20show%20user%20permission%20settings%2C%20role%20hierarchy%20diagrams%2C%20and%20access%20control%20matrices.%20Include%20elements%20like%20user%20role%20assignment%20panels%2C%20permission%20toggles%2C%20and%20security%20level%20indicators.%20The%20design%20should%20be%20clean%20and%20professional%2C%20illustrating%20a%20sophisticated%20permission%20system%20that%20controls%20access%20to%20sensitive%20voice%20security%20features%20and%20data%20with%20modern%20UI%20elements%20and%20clear%20visual%20hierarchy.&width=600&height=400&seq=permission-1&orientation=landscape" alt="精细化权限管理" class="w-full h-full object-cover object-top">
+</div>
+<div class="p-6">
+<div class="flex items-center space-x-3 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-100 text-primary rounded-full">
+<i class="ri-lock-line ri-lg"></i>
+</div>
+<h3 class="text-xl font-semibold">精细化权限管理</h3>
+</div>
+<p class="text-gray-600 mb-4">
+通过基于角色的访问控制系统，为不同用户提供精细化的权限控制，确保敏感功能和数据仅对授权人员可见。
+</p>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500">安全分级访问</span>
+<button class="text-primary hover:text-primary/80 text-sm font-medium !rounded-button whitespace-nowrap">
+了解更多 <i class="ri-arrow-right-line ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 先进技术特色 -->
+<section id="technology" class="py-16 tech-section">
+<div class="container mx-auto px-4 md:px-6">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold mb-4">先进技术特色</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">
+慧音执守以其深厚的技术创新而著称，为语音安全领域带来了范式转变。
+</p>
+</div>
+<!-- AI驱动的深度学习 -->
+<div class="flex flex-col md:flex-row items-center mb-16">
+<div class="w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+<h3 class="text-2xl font-semibold mb-4">AI驱动的深度学习</h3>
+<p class="text-gray-600 mb-6">
+我们的系统实现了多维度的音频特征提取流程，通过分析梅尔频率倒谱系数（MFCC）、过零率和均方根误差（RMSE）等特征，为输入音频创建详细的"指纹"。
+</p>
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line"></i>
+</div>
+<span class="text-gray-700">多层神经网络架构，识别准确率高达 96.2%</span>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line"></i>
+</div>
+<span class="text-gray-700">支持向量机（SVM）与长短期记忆网络（LSTM）结合</span>
+</li>
+<li class="flex items-start">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line"></i>
+</div>
+<span class="text-gray-700">Jaro-Winkler 相似度算法优化语义分析</span>
+</li>
+</ul>
+</div>
+<div class="w-full md:w-1/2">
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20detailed%20technical%20visualization%20of%20AI-driven%20deep%20learning%20for%20voice%20security.%20The%20image%20should%20show%20a%20neural%20network%20processing%20audio%20features%20like%20MFCC%2C%20zero-crossing%20rate%2C%20and%20RMSE.%20Include%20visual%20representations%20of%20SVM%20and%20LSTM%20models%20analyzing%20voice%20data%20with%20clear%20data%20flow%20diagrams.%20The%20design%20should%20be%20technical%20and%20educational%2C%20illustrating%20how%20the%20system%20creates%20audio%20fingerprints%20for%20security%20analysis%20with%20clean%2C%20professional%20diagrams%20and%20modern%20UI%20elements.&width=800&height=500&seq=ai-tech-1&orientation=landscape" alt="AI驱动的深度学习" class="w-full h-full object-cover object-top">
+</div>
+</div>
+</div>
+<!-- 毫秒级实时响应 -->
+<div class="flex flex-col md:flex-row-reverse items-center mb-16">
+<div class="w-full md:w-1/2 mb-8 md:mb-0 md:pl-8">
+<h3 class="text-2xl font-semibold mb-4">毫秒级实时响应</h3>
+<p class="text-gray-600 mb-6">
+系统专为7x24小时全天候监控而设计，其架构确保了对潜在威胁的毫秒级响应，能够即时过滤攻击并向用户发出警报，有效阻止攻击得逞。
+</p>
+<div class="bg-white rounded-lg p-4 shadow-sm mb-6">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm text-gray-500">平均响应时间</span>
+<span class="text-sm font-semibold text-primary">12.7ms</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2">
+<div class="bg-primary rounded-full h-2" style="width: 92%"></div>
+</div>
+</div>
+<div class="bg-white rounded-lg p-4 shadow-sm">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm text-gray-500">威胁拦截率</span>
+<span class="text-sm font-semibold text-primary">99.8%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2">
+<div class="bg-primary rounded-full h-2" style="width: 99.8%"></div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20technical%20visualization%20of%20real-time%20millisecond-level%20response%20system%20for%20voice%20security.%20The%20image%20should%20show%20a%20performance%20dashboard%20with%20response%20time%20metrics%2C%20threat%20interception%20rates%2C%20and%20system%20monitoring%20indicators.%20Include%20visual%20elements%20that%20represent%2024%2F7%20monitoring%20architecture%20with%20attack%20filtering%20and%20alert%20generation.%20The%20design%20should%20be%20technical%20and%20data-focused%2C%20illustrating%20the%20systems%20ability%20to%20respond%20to%20threats%20in%20milliseconds%20with%20clean%2C%20professional%20UI%20elements%20and%20performance%20graphs.&width=800&height=500&seq=realtime-1&orientation=landscape" alt="毫秒级实时响应" class="w-full h-full object-cover object-top">
+</div>
+</div>
+</div>
+<!-- 直观的数据可视化 -->
+<div class="flex flex-col md:flex-row items-center mb-16">
+<div class="w-full md:w-1/2 mb-8 md:mb-0 md:pr-8">
+<h3 class="text-2xl font-semibold mb-4">直观的数据可视化</h3>
+<p class="text-gray-600 mb-6">
+我们将复杂的安全数据转化为清晰、可操作的洞察。动态热力图、趋势图和综合仪表盘让安全态势一目了然，为快速、明智的决策提供支持。
+</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white rounded-lg p-4 shadow-sm">
+<div class="flex items-center space-x-2 mb-3">
+<div class="w-8 h-8 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-map-2-line"></i>
+</div>
+<span class="font-medium">热力图分析</span>
+</div>
+<p class="text-sm text-gray-600">地理位置威胁分布可视化，直观展示高风险区域</p>
+</div>
+<div class="bg-white rounded-lg p-4 shadow-sm">
+<div class="flex items-center space-x-2 mb-3">
+<div class="w-8 h-8 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-line-chart-line"></i>
+</div>
+<span class="font-medium">趋势分析</span>
+</div>
+<p class="text-sm text-gray-600">威胁趋势实时追踪，预测未来安全态势变化</p>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20sophisticated%20data%20visualization%20dashboard%20for%20voice%20security%20analytics.%20The%20image%20should%20show%20multiple%20visualization%20types%20including%20heat%20maps%2C%20trend%20graphs%2C%20and%20comprehensive%20dashboards%20displaying%20security%20metrics.%20Include%20elements%20that%20transform%20complex%20security%20data%20into%20clear%2C%20actionable%20insights.%20The%20design%20should%20be%20clean%20and%20professional%2C%20illustrating%20how%20security%20data%20is%20visualized%20for%20quick%20decision-making%20with%20modern%20UI%20elements%20and%20clear%20data%20presentation.&width=800&height=500&seq=data-viz-1&orientation=landscape" alt="直观的数据可视化" class="w-full h-full object-cover object-top">
+</div>
+</div>
+</div>
+<!-- 模块化与响应式架构 -->
+<div class="flex flex-col md:flex-row-reverse items-center">
+<div class="w-full md:w-1/2 mb-8 md:mb-0 md:pl-8">
+<h3 class="text-2xl font-semibold mb-4">模块化与响应式架构</h3>
+<p class="text-gray-600 mb-6">
+平台基于C/S与B/S混合架构搭建，提供响应式的现代用户界面。客户端App为用户提供实时保护，而基于浏览器的管理控制台则为管理员提供了强大、便捷的系统监控工具。
+</p>
+<div class="flex space-x-4 mb-6">
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-primary rounded-full"></div>
+<span class="text-sm">客户端组件</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-secondary rounded-full"></div>
+<span class="text-sm">服务端组件</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-4 h-4 bg-gray-300 rounded-full"></div>
+<span class="text-sm">共享组件</span>
+</div>
+</div>
+<div class="bg-white rounded-lg p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<span class="font-medium">系统兼容性</span>
+<div class="flex space-x-2">
+<div class="w-8 h-8 flex items-center justify-center text-gray-600">
+<i class="ri-android-line ri-lg"></i>
+</div>
+<div class="w-8 h-8 flex items-center justify-center text-gray-600">
+<i class="ri-apple-line ri-lg"></i>
+</div>
+<div class="w-8 h-8 flex items-center justify-center text-gray-600">
+<i class="ri-windows-line ri-lg"></i>
+</div>
+<div class="w-8 h-8 flex items-center justify-center text-gray-600">
+<i class="ri-ubuntu-line ri-lg"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="bg-white rounded-xl shadow-lg overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=A%20technical%20architecture%20diagram%20showing%20a%20modular%20and%20responsive%20system%20design%20for%20voice%20security.%20The%20image%20should%20illustrate%20a%20hybrid%20C%2FS%20and%20B%2FS%20architecture%20with%20client%20apps%20and%20browser-based%20management%20consoles.%20Include%20visual%20representations%20of%20system%20components%2C%20data%20flow%20between%20modules%2C%20and%20the%20responsive%20design%20across%20different%20devices.%20The%20design%20should%20be%20technical%20and%20educational%2C%20clearly%20showing%20how%20the%20platform%20components%20work%20together%20with%20professional%20diagrams%20and%20modern%20UI%20elements.&width=800&height=500&seq=architecture-1&orientation=landscape" alt="模块化与响应式架构" class="w-full h-full object-cover object-top">
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 安全保障 -->
+<section id="security" class="py-16 security-section">
+<div class="container mx-auto px-4 md:px-6">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold mb-4">毫不妥协的安全保障</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">
+安全是慧音执守的基石。我们实施了一套多方位的安全框架，以保护系统、数据和用户。
+</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+<!-- 多层次身份认证 -->
+<div class="bg-white rounded-xl p-8 shadow-md">
+<div class="flex items-center space-x-4 mb-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-fingerprint-line ri-xl"></i>
+</div>
+<h3 class="text-xl font-semibold">多层次身份认证</h3>
+</div>
+<p class="text-gray-600 mb-6">
+我们采用强大的身份验证系统，包括声纹注册和动态密码验证，以防止未经授权的访问并确保用户参与的完整性。
+</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center space-x-2 mb-2">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-voice-recognition-line"></i>
+</div>
+<span class="font-medium text-sm">声纹识别</span>
+</div>
+<p class="text-xs text-gray-600">使用独特声纹特征进行身份验证，防止伪装攻击</p>
+</div>
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center space-x-2 mb-2">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-shield-keyhole-line"></i>
+</div>
+<span class="font-medium text-sm">双因素认证</span>
+</div>
+<p class="text-xs text-gray-600">结合密码和动态验证码，提供双重安全保障</p>
+</div>
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center space-x-2 mb-2">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-user-follow-line"></i>
+</div>
+<span class="font-medium text-sm">行为分析</span>
+</div>
+<p class="text-xs text-gray-600">分析用户操作习惯，识别异常行为模式</p>
+</div>
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center space-x-2 mb-2">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-timer-line"></i>
+</div>
+<span class="font-medium text-sm">会话控制</span>
+</div>
+<p class="text-xs text-gray-600">自动超时机制和会话监控，防止会话劫持</p>
+</div>
+</div>
+</div>
+<!-- 端到端数据加密 -->
+<div class="bg-white rounded-xl p-8 shadow-md">
+<div class="flex items-center space-x-4 mb-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-lock-password-line ri-xl"></i>
+</div>
+<h3 class="text-xl font-semibold">端到端数据加密</h3>
+</div>
+<p class="text-gray-600 mb-6">
+客户端App与后端服务器之间的所有通信，尤其是敏感语音数据的传输，均采用国密SM2/SM3/SM4加密算法套件进行加密。
+</p>
+<div class="bg-gray-50 rounded-lg p-4 mb-4">
+<h4 class="font-medium mb-3">加密流程</h4>
+<div class="flex items-center justify-between">
+<div class="text-center">
+<div class="w-12 h-12 mx-auto flex items-center justify-center bg-primary/10 text-primary rounded-full mb-2">
+<i class="ri-smartphone-line ri-lg"></i>
+</div>
+<span class="text-xs">客户端</span>
+</div>
+<div class="flex-1 px-2">
+<div class="h-1 bg-primary relative">
+<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-6 h-6 flex items-center justify-center bg-white border border-primary rounded-full text-primary">
+<i class="ri-lock-line"></i>
+</div>
+</div>
+</div>
+<div class="text-center">
+<div class="w-12 h-12 mx-auto flex items-center justify-center bg-primary/10 text-primary rounded-full mb-2">
+<i class="ri-server-line ri-lg"></i>
+</div>
+<span class="text-xs">服务器</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="bg-gray-50 rounded-lg p-3 text-center">
+<div class="w-8 h-8 mx-auto flex items-center justify-center bg-primary/10 text-primary rounded-full mb-2">
+<i class="ri-key-2-line"></i>
+</div>
+<span class="text-xs font-medium">SM2</span>
+<p class="text-xs text-gray-500">非对称加密</p>
+</div>
+<div class="bg-gray-50 rounded-lg p-3 text-center">
+<div class="w-8 h-8 mx-auto flex items-center justify-center bg-primary/10 text-primary rounded-full mb-2">
+<i class="ri-fingerprint-2-line"></i>
+</div>
+<span class="text-xs font-medium">SM3</span>
+<p class="text-xs text-gray-500">哈希算法</p>
+</div>
+<div class="bg-gray-50 rounded-lg p-3 text-center">
+<div class="w-8 h-8 mx-auto flex items-center justify-center bg-primary/10 text-primary rounded-full mb-2">
+<i class="ri-shield-check-line"></i>
+</div>
+<span class="text-xs font-medium">SM4</span>
+<p class="text-xs text-gray-500">对称加密</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- 全面的审计日志 -->
+<div class="bg-white rounded-xl p-8 shadow-md">
+<div class="flex items-center space-x-4 mb-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-file-list-3-line ri-xl"></i>
+</div>
+<h3 class="text-xl font-semibold">全面的审计日志</h3>
+</div>
+<p class="text-gray-600 mb-6">
+系统会详细记录所有操作，为安全审计和事件响应提供完整、可追溯的依据。
+</p>
+<div class="bg-gray-50 rounded-lg p-4 max-h-60 overflow-y-auto">
+<div class="space-y-3">
+<div class="flex items-start">
+<div class="w-4 h-4 mt-1 bg-green-500 rounded-full mr-3 flex-shrink-0"></div>
+<div>
+<div class="flex justify-between">
+<span class="text-xs font-medium">系统启动</span>
+<span class="text-xs text-gray-500">今天 08:12:45</span>
+</div>
+<p class="text-xs text-gray-600">系统服务正常启动，所有模块加载完成</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-4 h-4 mt-1 bg-blue-500 rounded-full mr-3 flex-shrink-0"></div>
+<div>
+<div class="flex justify-between">
+<span class="text-xs font-medium">用户登录</span>
+<span class="text-xs text-gray-500">今天 08:15:32</span>
+</div>
+<p class="text-xs text-gray-600">管理员 admin@huiyin.com 登录系统</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-4 h-4 mt-1 bg-yellow-500 rounded-full mr-3 flex-shrink-0"></div>
+<div>
+<div class="flex justify-between">
+<span class="text-xs font-medium">配置变更</span>
+<span class="text-xs text-gray-500">今天 08:23:17</span>
+</div>
+<p class="text-xs text-gray-600">更新系统安全策略，提高敏感度阈值</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-4 h-4 mt-1 bg-red-500 rounded-full mr-3 flex-shrink-0"></div>
+<div>
+<div class="flex justify-between">
+<span class="text-xs font-medium">威胁检测</span>
+<span class="text-xs text-gray-500">今天 09:45:03</span>
+</div>
+<p class="text-xs text-gray-600">检测到可疑语音指令，已自动拦截</p>
+</div>
+</div>
+<div class="flex items-start">
+<div class="w-4 h-4 mt-1 bg-blue-500 rounded-full mr-3 flex-shrink-0"></div>
+<div>
+<div class="flex justify-between">
+<span class="text-xs font-medium">数据备份</span>
+<span class="text-xs text-gray-500">今天 12:00:00</span>
+</div>
+<p class="text-xs text-gray-600">系统数据自动备份完成，存储至安全存储</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 智能异常行为检测 -->
+<div class="bg-white rounded-xl p-8 shadow-md">
+<div class="flex items-center space-x-4 mb-6">
+<div class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-full">
+<i class="ri-radar-line ri-xl"></i>
+</div>
+<h3 class="text-xl font-semibold">智能异常行为检测</h3>
+</div>
+<p class="text-gray-600 mb-6">
+平台主动监控异常的用户行为和系统访问模式，自动标记潜在的安全风险。
+</p>
+<div class="bg-gray-50 rounded-lg p-4 mb-4">
+<h4 class="font-medium mb-3">行为分析引擎</h4>
+<div class="h-40 w-full">
+<div id="behaviorChart" class="w-full h-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium">异常检测率</span>
+<span class="text-sm text-primary font-semibold">99.4%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2">
+<div class="bg-primary rounded-full h-2" style="width: 99.4%"></div>
+</div>
+</div>
+<div class="bg-gray-50 rounded-lg p-4">
+<div class="flex items-center justify-between mb-2">
+<span class="text-sm font-medium">误报率</span>
+<span class="text-sm text-primary font-semibold">0.3%</span>
+</div>
+<div class="w-full bg-gray-200 rounded-full h-2">
+<div class="bg-primary rounded-full h-2" style="width: 0.3%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 产品价值 -->
+<section id="value" class="py-16 bg-gradient-to-b from-white to-blue-50">
+<div class="container mx-auto px-4 md:px-6">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold mb-4">慧音执守的价值</h2>
+<p class="text-gray-600 max-w-3xl mx-auto">
+慧音执守为语音安全领域带来了范式转变，构建了一个三位一体的防护生态系统。
+</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- 个人价值 -->
+<div class="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/10 text-primary rounded-full mb-6">
+<i class="ri-user-shield-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-4">保护个人用户安全</h3>
+<p class="text-gray-600 mb-6">
+为个人用户提供一面抵御隐私侵犯和设备劫持的关键盾牌，保护您的智能设备免受语音攻击。
+</p>
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">保护个人隐私信息不被窃取</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">防止智能设备被恶意控制</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">阻止未授权的语音交易和操作</span>
+</li>
+</ul>
+</div>
+<!-- 社区价值 -->
+<div class="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/10 text-primary rounded-full mb-6">
+<i class="ri-community-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-4">培育社区级联防</h3>
+<p class="text-gray-600 mb-6">
+构建社区安全生态系统，通过群智感知和协同防御机制，共同应对语音安全威胁，提升整体安全水平。
+</p>
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">建立社区安全预警网络</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">促进安全知识共享与传播</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">集体智慧应对新型威胁</span>
+</li>
+</ul>
+</div>
+<!-- 社会价值 -->
+<div class="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/10 text-primary rounded-full mb-6">
+<i class="ri-global-line ri-2x"></i>
+</div>
+<h3 class="text-xl font-semibold mb-4">赋能社会级风险管控</h3>
+<p class="text-gray-600 mb-6">
+为企业和社会提供坚固的防护体系，有效防止语音攻击可能引发的大范围混乱和安全事件。
+</p>
+<ul class="space-y-3">
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">保障关键基础设施安全</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">降低大规模安全事件风险</span>
+</li>
+<li class="flex items-start">
+<div class="w-5 h-5 flex items-center justify-center bg-primary/10 text-primary rounded-full mt-0.5 mr-3">
+<i class="ri-check-line text-xs"></i>
+</div>
+<span class="text-gray-700 text-sm">促进物联网产业健康发展</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- 行动召唤 -->
+<section class="py-16 bg-primary/5">
+<div class="container mx-auto px-4 md:px-6">
+<div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+<div class="flex flex-col md:flex-row items-center">
+<div class="w-full md:w-2/3 mb-8 md:mb-0 md:pr-8">
+<h2 class="text-3xl font-bold mb-4">立即开启您的语音安全之旅</h2>
+<p class="text-gray-600 mb-6">
+慧音执守为您提供全方位的语音安全保障，从个人设备到企业系统，全面守护您的数字生活。现在注册即可获得30天免费试用，体验业界领先的语音安全防护技术。
+</p>
+<div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+<button class="px-6 py-3 bg-primary text-white font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+<i class="ri-user-add-line mr-2"></i>
+免费注册
+</button>
+<button class="px-6 py-3 bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors !rounded-button whitespace-nowrap">
+<i class="ri-customer-service-2-line mr-2"></i>
+联系顾问
+</button>
+</div>
+</div>
+<div class="w-full md:w-1/3">
+<div class="bg-gray-50 rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-4">订阅更新</h3>
+<p class="text-gray-600 text-sm mb-4">
+订阅我们的通讯，获取最新的语音安全资讯和产品更新。
+</p>
+<div class="flex flex-col space-y-3">
+<div class="relative">
+<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+<i class="ri-mail-line text-gray-400"></i>
+</div>
+<input type="email" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary" placeholder="您的邮箱地址">
+</div>
+<button class="w-full px-4 py-2 bg-primary text-white font-medium hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap">
+订阅
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 页脚 -->
+<footer class="bg-gray-900 text-white py-12">
+<div class="container mx-auto px-4 md:px-6">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+<div>
+<div class="flex items-center space-x-2 mb-4">
+<div class="w-10 h-10 flex items-center justify-center bg-white rounded-full text-primary">
+<i class="ri-shield-keyhole-line ri-lg"></i>
+</div>
+<span class="text-2xl font-['Pacifico'] text-white">慧音执守</span>
+</div>
+<p class="text-gray-400 mb-4">
+物联网语音安全的领航者，为您的数字生活保驾护航。
+</p>
+<div class="flex space-x-4">
+<a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-800 hover:bg-primary transition-colors rounded-full">
+<i class="ri-weibo-line"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-800 hover:bg-primary transition-colors rounded-full">
+<i class="ri-wechat-line"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-800 hover:bg-primary transition-colors rounded-full">
+<i class="ri-linkedin-line"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-800 hover:bg-primary transition-colors rounded-full">
+<i class="ri-github-line"></i>
+</a>
+</div>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">产品</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">个人版</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">企业版</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">社区版</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">API 接口</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">SDK 开发包</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">资源</h4>
+<ul class="space-y-2">
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">技术文档</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">开发者中心</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">安全公告</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">博客</a></li>
+<li><a href="#" class="text-gray-400 hover:text-white transition-colors">案例研究</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-lg font-semibold mb-4">联系我们</h4>
+<ul class="space-y-2">
+<li class="flex items-start">
+<i class="ri-map-pin-line mt-1 mr-2 text-gray-400"></i>
+<span class="text-gray-400">北京市海淀区中关村科技园区</span>
+</li>
+<li class="flex items-center">
+<i class="ri-mail-line mr-2 text-gray-400"></i>
+<span class="text-gray-400">contact@huiyinguardian.com</span>
+</li>
+<li class="flex items-center">
+<i class="ri-phone-line mr-2 text-gray-400"></i>
+<span class="text-gray-400">400-888-7766</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-8">
+<div class="flex flex-col md:flex-row justify-between items-center">
+<p class="text-gray-400 text-sm mb-4 md:mb-0">
+&copy; 2025 慧音执守科技有限公司. 保留所有权利.
+</p>
+<div class="flex space-x-6">
+<a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">隐私政策</a>
+<a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">服务条款</a>
+<a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">法律声明</a>
+<a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">网站地图</a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script id="chartInit">
+document.addEventListener('DOMContentLoaded', function() {
+// 波形图表
+const waveChart = echarts.init(document.getElementById('waveChart'));
+const waveOption = {
+animation: false,
+grid: {
+top: 0,
+right: 0,
+bottom: 0,
+left: 0
+},
+xAxis: {
+type: 'category',
+boundaryGap: false,
+show: false,
+data: Array.from({length: 50}, (_, i) => i)
+},
+yAxis: {
+type: 'value',
+show: false
+},
+series: [{
+data: Array.from({length: 50}, () => Math.random() * 10 + 5),
+type: 'line',
+smooth: true,
+symbol: 'none',
+lineStyle: {
+color: 'rgba(87, 181, 231, 1)',
+width: 2
+},
+areaStyle: {
+color: {
+type: 'linear',
+x: 0,
+y: 0,
+x2: 0,
+y2: 1,
+colorStops: [{
+offset: 0, color: 'rgba(87, 181, 231, 0.3)'
+}, {
+offset: 1, color: 'rgba(87, 181, 231, 0.1)'
+}]
+}
+}
+}]
+};
+waveChart.setOption(waveOption);
+// 挑战图表1
+const challengeChart1 = echarts.init(document.getElementById('challengeChart1'));
+const challenge1Option = {
+animation: false,
+tooltip: {
+trigger: 'axis',
+backgroundColor: 'rgba(255, 255, 255, 0.8)',
+textStyle: {
+color: '#1f2937'
+}
+},
+grid: {
+top: 10,
+right: 10,
+bottom: 20,
+left: 50
+},
+xAxis: {
+type: 'category',
+data: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2'],
+axisLabel: {
+color: '#1f2937'
+}
+},
+yAxis: {
+type: 'value',
+name: '检测难度',
+nameTextStyle: {
+color: '#1f2937'
+},
+axisLabel: {
+color: '#1f2937'
+}
+},
+series: [{
+data: [30, 42, 51, 64, 75, 85],
+type: 'line',
+smooth: true,
+lineStyle: {
+color: 'rgba(87, 181, 231, 1)'
+},
+areaStyle: {
+color: {
+type: 'linear',
+x: 0,
+y: 0,
+x2: 0,
+y2: 1,
+colorStops: [{
+offset: 0, color: 'rgba(87, 181, 231, 0.2)'
+}, {
+offset: 1, color: 'rgba(87, 181, 231, 0.05)'
+}]
+}
+}
+}]
+};
+challengeChart1.setOption(challenge1Option);
+// 挑战图表2
+const challengeChart2 = echarts.init(document.getElementById('challengeChart2'));
+const challenge2Option = {
+animation: false,
+tooltip: {
+trigger: 'item',
+backgroundColor: 'rgba(255, 255, 255, 0.8)',
+textStyle: {
+color: '#1f2937'
+}
+},
+grid: {
+top: 10,
+right: 10,
+bottom: 20,
+left: 50
+},
+series: [{
+type: 'pie',
+radius: ['40%', '70%'],
+avoidLabelOverlap: false,
+itemStyle: {
+borderRadius: 8
+},
+label: {
+show: false
+},
+emphasis: {
+label: {
+show: true,
+fontSize: '12',
+fontWeight: 'bold'
+}
+},
+labelLine: {
+show: false
+},
+data: [
+{ value: 45, name: '对抗性样本', itemStyle: { color: 'rgba(87, 181, 231, 1)' } },
+{ value: 30, name: '模糊指令', itemStyle: { color: 'rgba(141, 211, 199, 1)' } },
+{ value: 15, name: '超声波攻击', itemStyle: { color: 'rgba(251, 191, 114, 1)' } },
+{ value: 10, name: '其他', itemStyle: { color: 'rgba(252, 141, 98, 1)' } }
+]
+}]
+};
+challengeChart2.setOption(challenge2Option);
+// 挑战图表3
+const challengeChart3 = echarts.init(document.getElementById('challengeChart3'));
+const challenge3Option = {
+animation: false,
+tooltip: {
+trigger: 'axis',
+backgroundColor: 'rgba(255, 255, 255, 0.8)',
+textStyle: {
+color: '#1f2937'
+}
+},
+grid: {
+top: 10,
+right: 10,
+bottom: 20,
+left: 50
+},
+xAxis: {
+type: 'category',
+data: ['传统', '慧音执守'],
+axisLabel: {
+color: '#1f2937'
+}
+},
+yAxis: {
+type: 'value',
+name: '预测能力',
+nameTextStyle: {
+color: '#1f2937'
+},
+axisLabel: {
+color: '#1f2937'
+}
+},
+series: [{
+data: [35, 92],
+type: 'bar',
+barWidth: '40%',
+itemStyle: {
+color: function(params) {
+return params.dataIndex === 0 ? 'rgba(252, 141, 98, 1)' : 'rgba(87, 181, 231, 1)';
+},
+borderRadius: 8
+}
+}]
+};
+challengeChart3.setOption(challenge3Option);
+// 行为分析图表
+const behaviorChart = echarts.init(document.getElementById('behaviorChart'));
+const behaviorOption = {
+animation: false,
+tooltip: {
+trigger: 'axis',
+backgroundColor: 'rgba(255, 255, 255, 0.8)',
+textStyle: {
+color: '#1f2937'
+}
+},
+legend: {
+data: ['正常行为', '异常行为'],
+textStyle: {
+color: '#1f2937'
+}
+},
+grid: {
+top: 30,
+right: 10,
+bottom: 20,
+left: 50
+},
+xAxis: {
+type: 'category',
+boundaryGap: false,
+data: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+axisLabel: {
+color: '#1f2937'
+}
+},
+yAxis: {
+type: 'value',
+axisLabel: {
+color: '#1f2937'
+}
+},
+series: [
+{
+name: '正常行为',
+type: 'line',
+stack: 'Total',
+smooth: true,
+lineStyle: {
+color: 'rgba(87, 181, 231, 1)'
+},
+areaStyle: {
+color: {
+type: 'linear',
+x: 0,
+y: 0,
+x2: 0,
+y2: 1,
+colorStops: [{
+offset: 0, color: 'rgba(87, 181, 231, 0.2)'
+}, {
+offset: 1, color: 'rgba(87, 181, 231, 0.05)'
+}]
+}
+},
+data: [120, 132, 101, 134, 90, 230, 210]
+},
+{
+name: '异常行为',
+type: 'line',
+stack: 'Total',
+smooth: true,
+lineStyle: {
+color: 'rgba(252, 141, 98, 1)'
+},
+areaStyle: {
+color: {
+type: 'linear',
+x: 0,
+y: 0,
+x2: 0,
+y2: 1,
+colorStops: [{
+offset: 0, color: 'rgba(252, 141, 98, 0.2)'
+}, {
+offset: 1, color: 'rgba(252, 141, 98, 0.05)'
+}]
+}
+},
+data: [5, 3, 8, 12, 6, 10, 4]
+}
+]
+};
+behaviorChart.setOption(behaviorOption);
+// 窗口大小变化时重新调整图表大小
+window.addEventListener('resize', function() {
+waveChart.resize();
+challengeChart1.resize();
+challengeChart2.resize();
+challengeChart3.resize();
+behaviorChart.resize();
+});
+});
+</script>
+<script id="navbarScroll">
+document.addEventListener('DOMContentLoaded', function() {
+const navbar = document.querySelector('nav');
+window.addEventListener('scroll', function() {
+if (window.scrollY > 10) {
+navbar.classList.add('shadow-md');
+navbar.classList.remove('shadow-sm');
+} else {
+navbar.classList.remove('shadow-md');
+navbar.classList.add('shadow-sm');
+}
+});
+});
+</script>
+<script id="authModal">
+document.addEventListener('DOMContentLoaded', function() {
+  const loginBtn = document.getElementById('loginBtn');
+  const authModal = document.getElementById('authModal');
+  const closeAuthModal = document.getElementById('closeAuthModal');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const showRegister = document.getElementById('showRegister');
+  const showLogin = document.getElementById('showLogin');
+  const loginSubmitForm = document.getElementById('loginSubmitForm');
+  const registerSubmitForm = document.getElementById('registerSubmitForm');
+  
+  function showModal() {
+    authModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    // 确保模态框在视口中央
+    setTimeout(() => {
+      authModal.scrollTop = 0;
+    }, 10);
+  }
+  
+  function hideModal() {
+    authModal.classList.add('hidden');
+    document.body.style.overflow = '';
+    // 重置表单显示状态
+    showLoginForm();
+  }
+  
+  function showLoginForm() {
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+  }
+  
+  function showRegisterForm() {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+  }
+  
+  function showSuccessMessage(message) {
+    // 创建成功提示
+    const successDiv = document.createElement('div');
+    successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[60] flex items-center space-x-2';
+    successDiv.innerHTML = `
+      <i class="ri-check-circle-line"></i>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(successDiv);
+    
+    // 3秒后自动移除
+    setTimeout(() => {
+      if (successDiv.parentNode) {
+        successDiv.parentNode.removeChild(successDiv);
+      }
+    }, 3000);
+  }
+  
+  // 事件监听器
+  loginBtn.addEventListener('click', showModal);
+  closeAuthModal.addEventListener('click', hideModal);
+  showRegister.addEventListener('click', showRegisterForm);
+  showLogin.addEventListener('click', showLoginForm);
+  
+  authModal.addEventListener('click', function(e) {
+    if (e.target === authModal) {
+      hideModal();
+    }
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !authModal.classList.contains('hidden')) {
+      hideModal();
+    }
+  });
+  
+  // 登录表单提交
+  loginSubmitForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const remember = document.getElementById('remember').checked;
+    
+    // 模拟登录验证 - 任何输入都视为成功
+    if (email && password) {
+      showSuccessMessage('登录成功！正在跳转...');
+      hideModal();
+      
+      // 1.5秒后跳转到dashboard.html
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+  });
+  
+  // 注册表单提交
+  registerSubmitForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const agreeTerms = document.getElementById('agreeTerms').checked;
+    
+    // 简单验证
+    if (password !== confirmPassword) {
+      alert('两次输入的密码不一致，请重新输入');
+      return;
+    }
+    
+    if (!agreeTerms) {
+      alert('请同意服务条款和隐私政策');
+      return;
+    }
+    
+    // 模拟注册验证 - 任何输入都视为成功
+    if (name && email && password) {
+      showSuccessMessage('注册成功！正在跳转...');
+      hideModal();
+      
+      // 1.5秒后跳转到dashboard.html
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+  });
+});
+</script>
+<script id="smoothScroll">
+document.addEventListener('DOMContentLoaded', function() {
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({
+top: targetElement.offsetTop - 80,
+behavior: 'smooth'
+});
+}
+});
+});
+});
+</script>
+</body>
+</html>
