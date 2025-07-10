@@ -38,22 +38,7 @@ DEFAULT: '8px',
 :where([class^="ri-"])::before {
 content: "\f3c2";
 }
-.heat-point {
-animation: pulse 2s infinite;
-}
-@keyframes pulse {
-0%, 100% { opacity: 1; }
-50% { opacity: 0.5; }
-}
-.heat-point-high {
-box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-}
-.heat-point-medium {
-box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
-}
-.heat-point-low {
-box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
-}
+
 .map-controls {
 backdrop-filter: blur(10px);
 background: rgba(255, 255, 255, 0.9);
@@ -205,16 +190,7 @@ background: #94a3b8;
 </div>
 <!-- 地图容器 -->
 <div class="flex-1 relative">
-<div class="absolute inset-0 bg-gray-100 overflow-hidden" style="background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png'); background-size: cover; background-position: center;">
-<!-- 热力点 -->
-<div class="absolute top-[25%] left-[30%] w-8 h-8 bg-red-500 rounded-full heat-point heat-point-high opacity-90"></div>
-<div class="absolute top-[35%] left-[45%] w-6 h-6 bg-red-600 rounded-full heat-point heat-point-high opacity-95"></div>
-<div class="absolute top-[50%] left-[55%] w-10 h-10 bg-red-600 rounded-full heat-point heat-point-high opacity-85"></div>
-<div class="absolute top-[40%] right-[25%] w-7 h-7 bg-orange-500 rounded-full heat-point heat-point-medium opacity-80"></div>
-<div class="absolute top-[60%] left-[25%] w-5 h-5 bg-orange-400 rounded-full heat-point heat-point-medium opacity-75"></div>
-<div class="absolute bottom-[30%] right-[35%] w-4 h-4 bg-yellow-500 rounded-full heat-point heat-point-low opacity-70"></div>
-<div class="absolute top-[70%] left-[40%] w-6 h-6 bg-red-500 rounded-full heat-point heat-point-high opacity-88"></div>
-<div class="absolute top-[20%] right-[40%] w-5 h-5 bg-orange-500 rounded-full heat-point heat-point-medium opacity-82"></div>
+<div class="absolute inset-0 bg-gray-100 overflow-hidden" style="background-image: url('hotpoint.png'); background-size: cover; background-position: center;">
 <!-- 地图控制按钮 -->
 <div class="absolute top-4 left-4 flex flex-col space-y-2">
 <button class="w-10 h-10 map-controls rounded-lg flex items-center justify-center hover:bg-white transition-colors whitespace-nowrap !rounded-button">
@@ -238,15 +214,15 @@ background: #94a3b8;
 <div class="text-sm font-medium text-gray-800 mb-3">攻击密度图例</div>
 <div class="space-y-2">
 <div class="flex items-center space-x-2">
-<div class="w-4 h-4 bg-red-600 rounded-full heat-point-high"></div>
+<div class="w-4 h-4 bg-red-600 rounded-full"></div>
 <span class="text-sm text-gray-700">高危（>50 次/小时）</span>
 </div>
 <div class="flex items-center space-x-2">
-<div class="w-4 h-4 bg-orange-500 rounded-full heat-point-medium"></div>
+<div class="w-4 h-4 bg-orange-500 rounded-full"></div>
 <span class="text-sm text-gray-700">中危（20-50 次/小时）</span>
 </div>
 <div class="flex items-center space-x-2">
-<div class="w-4 h-4 bg-yellow-500 rounded-full heat-point-low"></div>
+<div class="w-4 h-4 bg-yellow-500 rounded-full"></div>
 <span class="text-sm text-gray-700">低危（<20 次/小时）</span>
 </div>
 </div>
